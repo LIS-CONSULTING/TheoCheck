@@ -26,14 +26,7 @@ console.log("Firebase Config:", {
   apiKey: "HIDDEN",
 });
 
-try {
-  console.log("Initializing Firebase with project ID:", import.meta.env.VITE_FIREBASE_PROJECT_ID);
-  console.log("Current URL:", window.location.origin);
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  console.log("Firebase initialization successful");
-  export { app, auth };
-} catch (error) {
-  console.error("Failed to initialize Firebase:", error);
-  throw error;
-}
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+export { app, auth };
