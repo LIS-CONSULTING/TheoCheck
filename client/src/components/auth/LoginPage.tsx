@@ -19,6 +19,7 @@ export function LoginPage() {
 
     try {
       console.log("Starting Google Sign In...");
+      console.log("Current URL:", window.location.href);
       const result = await signInWithPopup(auth, provider);
       console.log("Sign in successful, user:", result.user?.email);
       setLocation("/");
@@ -27,7 +28,8 @@ export function LoginPage() {
         code: error.code,
         message: error.message,
         email: error.email,
-        credential: error.credential
+        credential: error.credential,
+        currentURL: window.location.href
       });
 
       let errorMessage = "Une erreur s'est produite lors de la connexion.";
@@ -41,6 +43,8 @@ export function LoginPage() {
         errorMessage = "La redirection a été annulée. Veuillez réessayer.";
       } else if (error.code === 'auth/operation-not-supported-in-this-environment') {
         errorMessage = "L'authentification n'est pas supportée dans cet environnement. Vérifiez la configuration Firebase.";
+      } else if (error.code === 'auth/redirect-uri-mismatch') {
+        errorMessage = "L'URI de redirection ne correspond pas. Veuillez vérifier la configuration Firebase avec l'URL: " + window.location.origin;
       }
 
       toast({
