@@ -51,13 +51,23 @@ export function LoginPage() {
   const handleLogin = async (data: LoginForm) => {
     setLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      console.log("Tentative de connexion avec:", data.email);
+      const userCredential = await signInWithEmailAndPassword(auth, data.email, data.password);
+      console.log("Connexion réussie:", userCredential.user.email);
       setLocation("/");
+      toast({
+        title: "Connexion réussie",
+        description: "Bienvenue sur Sermon GPT",
+      });
     } catch (error: any) {
-      console.error("Login error:", error);
+      console.error("Erreur de connexion:", error);
       let message = "Une erreur s'est produite lors de la connexion";
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
-        message = "Email ou mot de passe incorrect";
+      if (error.code === "auth/user-not-found") {
+        message = "Aucun compte trouvé avec cet email";
+      } else if (error.code === "auth/wrong-password") {
+        message = "Mot de passe incorrect";
+      } else if (error.code === "auth/invalid-email") {
+        message = "Format d'email invalide";
       }
       toast({
         title: "Erreur de connexion",
@@ -70,15 +80,34 @@ export function LoginPage() {
   };
 
   const handleRegister = async (data: RegisterForm) => {
+    if (data.password !== data.confirmPassword) {
+      toast({
+        title: "Erreur d'inscription",
+        description: "Les mots de passe ne correspondent pas",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log("Tentative d'inscription avec:", data.email);
+      const userCredential = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log("Inscription réussie:", userCredential.user.email);
       setLocation("/");
+      toast({
+        title: "Inscription réussie",
+        description: "Bienvenue sur Sermon GPT",
+      });
     } catch (error: any) {
-      console.error("Registration error:", error);
+      console.error("Erreur d'inscription:", error);
       let message = "Une erreur s'est produite lors de l'inscription";
       if (error.code === "auth/email-already-in-use") {
-        message = "Cet email est déjà utilisé";
+        message = "Un compte existe déjà avec cet email";
+      } else if (error.code === "auth/invalid-email") {
+        message = "Format d'email invalide";
+      } else if (error.code === "auth/weak-password") {
+        message = "Le mot de passe doit contenir au moins 6 caractères";
       }
       toast({
         title: "Erreur d'inscription",
