@@ -15,10 +15,12 @@ export default function Home() {
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <Link href="/analyze">
-            <Button size="lg">Analyser un sermon</Button>
+            <Button size="lg" className="text-xl px-10 py-7 transform hover:scale-105 transition-transform">
+              Analyser un sermon
+            </Button>
           </Link>
           <Link href="/about">
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" className="text-xl px-10 py-7 transform hover:scale-105 transition-transform">
               En savoir plus
             </Button>
           </Link>
