@@ -9,6 +9,7 @@ import Analyze from "@/pages/analyze";
 import History from "@/pages/history";
 import Contact from "@/pages/contact";
 import About from "@/pages/about";
+import Privacy from "@/pages/privacy";
 import { LoginPage } from "@/components/auth/LoginPage";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
       <Route path="/history" component={History} />
       <Route path="/contact" component={Contact} />
       <Route path="/about" component={About} />
+      <Route path="/privacy" component={Privacy} />
       <Route path="/login" component={LoginPage} />
       <Route component={NotFound} />
     </Switch>

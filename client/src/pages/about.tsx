@@ -17,7 +17,7 @@ export default function About() {
         </CardContent>
       </Card>
 
-      <Card className="mb-8">
+      <Card>
         <CardContent className="pt-6">
           <h2 className="mb-4 text-xl font-semibold">Comment ça marche</h2>
           <p className="text-muted-foreground">
@@ -25,18 +25,6 @@ export default function About() {
             dimensions : structure, clarté théologique, pertinence pratique et
             engagement. Vous recevez des retours détaillés et des suggestions
             concrètes pour améliorer votre prédication.
-          </p>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardContent className="pt-6">
-          <h2 className="mb-4 text-xl font-semibold">Confidentialité et Sécurité</h2>
-          <p className="text-muted-foreground">
-            Nous prenons très au sérieux la confidentialité de vos sermons. Tous
-            les contenus sont cryptés et traités de manière sécurisée. Vos
-            contenus ne sont jamais partagés ni utilisés à d'autres fins que
-            l'analyse.
           </p>
         </CardContent>
       </Card>

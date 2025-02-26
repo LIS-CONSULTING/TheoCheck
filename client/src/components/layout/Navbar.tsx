@@ -22,6 +22,9 @@ export function Navbar() {
           <Link href="/about">
             <a className="text-sm font-medium">À propos</a>
           </Link>
+          <Link href="/privacy">
+            <a className="text-sm font-medium">Confidentialité</a>
+          </Link>
           <Link href="/contact">
             <a className="text-sm font-medium">Contact</a>
           </Link>
