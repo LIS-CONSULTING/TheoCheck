@@ -15,7 +15,18 @@ export function SermonHistory() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Chargement...</div>;
+  }
+
+  if (!sermons?.length) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-lg text-muted-foreground mb-4">Vous n'avez pas encore soumis de sermon.</p>
+        <Link href="/analyze">
+          <Button>Soumettre votre premier sermon</Button>
+        </Link>
+      </div>
+    );
   }
 
   return (
