@@ -35,6 +35,12 @@ export function LoginPage() {
         errorMessage = "Le popup a été bloqué. Veuillez autoriser les popups pour ce site.";
       } else if (error.code === 'auth/popup-closed-by-user') {
         errorMessage = "Vous avez fermé la fenêtre de connexion.";
+      } else if (error.code === 'auth/unauthorized-domain') {
+        errorMessage = "Ce domaine n'est pas autorisé. Veuillez vérifier la configuration Firebase.";
+      } else if (error.code === 'auth/redirect-cancelled-by-user') {
+        errorMessage = "La redirection a été annulée. Veuillez réessayer.";
+      } else if (error.code === 'auth/operation-not-supported-in-this-environment') {
+        errorMessage = "L'authentification n'est pas supportée dans cet environnement. Vérifiez la configuration Firebase.";
       }
 
       toast({
