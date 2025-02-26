@@ -21,7 +21,11 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-console.log("Initializing Firebase with project ID:", import.meta.env.VITE_FIREBASE_PROJECT_ID);
+console.log("Firebase Config:", {
+  ...firebaseConfig,
+  apiKey: "HIDDEN",
+});
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 

@@ -16,16 +16,30 @@ export function LoginPage() {
   const signInWithGoogle = async () => {
     setLoading(true);
     const provider = new GoogleAuthProvider();
+
     try {
-      await signInWithPopup(auth, provider);
+      console.log("Starting Google Sign In...");
+      const result = await signInWithPopup(auth, provider);
+      console.log("Sign in successful, user:", result.user?.email);
       setLocation("/");
     } catch (error: any) {
-      console.error("Error signing in with Google:", error);
+      console.error("Detailed sign-in error:", {
+        code: error.code,
+        message: error.message,
+        email: error.email,
+        credential: error.credential
+      });
+
+      let errorMessage = "Une erreur s'est produite lors de la connexion.";
+      if (error.code === 'auth/popup-blocked') {
+        errorMessage = "Le popup a été bloqué. Veuillez autoriser les popups pour ce site.";
+      } else if (error.code === 'auth/popup-closed-by-user') {
+        errorMessage = "Vous avez fermé la fenêtre de connexion.";
+      }
+
       toast({
         title: "Erreur de connexion",
-        description: error.message === "auth/configuration-not-found" 
-          ? "Veuillez vérifier que le domaine est autorisé dans la console Firebase."
-          : "Une erreur s'est produite lors de la connexion.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
