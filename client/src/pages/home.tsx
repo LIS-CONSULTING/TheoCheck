@@ -28,7 +28,7 @@ export default function Home() {
       </div>
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="p-6 rounded-lg bg-card">
+        <div className="p-6 rounded-lg bg-card hover:bg-muted/50 transition-colors">
           <h3 className="text-xl font-bold mb-3 text-primary">Analyse complète</h3>
           <p className="text-base mb-4">Évaluation détaillée de votre sermon selon plusieurs critères</p>
           <ul className="space-y-2 text-muted-foreground">
@@ -50,7 +50,7 @@ export default function Home() {
             </li>
           </ul>
         </div>
-        <div className="p-6 rounded-lg bg-card">
+        <div className="p-6 rounded-lg bg-card hover:bg-muted/50 transition-colors">
           <h3 className="text-xl font-bold mb-3 text-primary">Visualisation interactive</h3>
           <p className="text-base mb-4">Graphiques et statistiques pour mieux comprendre vos forces et faiblesses</p>
           <ul className="space-y-2 text-muted-foreground">
@@ -72,7 +72,7 @@ export default function Home() {
             </li>
           </ul>
         </div>
-        <div className="p-6 rounded-lg bg-card">
+        <div className="p-6 rounded-lg bg-card hover:bg-muted/50 transition-colors">
           <h3 className="text-xl font-bold mb-3 text-primary">Rapport détaillé</h3>
           <p className="text-base mb-4">Téléchargez un rapport complet pour approfondir votre analyse</p>
           <ul className="space-y-2 text-muted-foreground">
