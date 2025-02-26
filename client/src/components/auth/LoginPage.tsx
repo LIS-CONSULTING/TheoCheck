@@ -1,51 +1,88 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { auth } from "@/lib/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import { SiGoogle } from "react-icons/si";
-import { useToast } from "@/hooks/use-toast";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import { auth } from "@/lib/firebase";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { LoginForm, RegisterForm, loginSchema, registerSchema } from "@/lib/auth";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export function LoginPage() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [loading, setLoading] = useState(false);
 
-  const signInWithGoogle = async () => {
-    setLoading(true);
-    const provider = new GoogleAuthProvider();
+  const loginForm = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
+  const registerForm = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+  });
+
+  const handleLogin = async (data: LoginForm) => {
+    setLoading(true);
     try {
-      console.log("Starting Google Sign In...");
-      const result = await signInWithPopup(auth, provider);
-      console.log("Sign in successful, user:", result.user?.email);
+      await signInWithEmailAndPassword(auth, data.email, data.password);
       setLocation("/");
     } catch (error: any) {
-      console.error("Detailed sign-in error:", {
-        code: error.code,
-        message: error.message,
-        email: error.email,
-        credential: error.credential
-      });
-
-      let errorMessage = "Une erreur s'est produite lors de la connexion.";
-      if (error.code === 'auth/popup-blocked') {
-        errorMessage = "Le popup a été bloqué. Veuillez autoriser les popups pour ce site.";
-      } else if (error.code === 'auth/popup-closed-by-user') {
-        errorMessage = "Vous avez fermé la fenêtre de connexion.";
-      } else if (error.code === 'auth/unauthorized-domain') {
-        errorMessage = "Ce domaine n'est pas autorisé. Veuillez vérifier la configuration Firebase.";
-      } else if (error.code === 'auth/redirect-cancelled-by-user') {
-        errorMessage = "La redirection a été annulée. Veuillez réessayer.";
-      } else if (error.code === 'auth/operation-not-supported-in-this-environment') {
-        errorMessage = "L'authentification n'est pas supportée dans cet environnement. Vérifiez la configuration Firebase.";
+      console.error("Login error:", error);
+      let message = "Une erreur s'est produite lors de la connexion";
+      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+        message = "Email ou mot de passe incorrect";
       }
-
       toast({
         title: "Erreur de connexion",
-        description: errorMessage,
+        description: message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async (data: RegisterForm) => {
+    setLoading(true);
+    try {
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      setLocation("/");
+    } catch (error: any) {
+      console.error("Registration error:", error);
+      let message = "Une erreur s'est produite lors de l'inscription";
+      if (error.code === "auth/email-already-in-use") {
+        message = "Cet email est déjà utilisé";
+      }
+      toast({
+        title: "Erreur d'inscription",
+        description: message,
         variant: "destructive",
       });
     } finally {
@@ -58,7 +95,9 @@ export function LoginPage() {
       <div className="grid w-full max-w-[1200px] gap-6 lg:grid-cols-2">
         <Card className="lg:p-2">
           <CardHeader>
-            <CardTitle className="text-2xl font-bold">Bienvenue sur Sermon GPT</CardTitle>
+            <CardTitle className="text-2xl font-bold">
+              Bienvenue sur Sermon GPT
+            </CardTitle>
             <CardDescription>
               Connectez-vous pour commencer à analyser vos sermons
             </CardDescription>
@@ -69,39 +108,90 @@ export function LoginPage() {
                 <TabsTrigger value="signin">Se connecter</TabsTrigger>
                 <TabsTrigger value="signup">S'inscrire</TabsTrigger>
               </TabsList>
-              <TabsContent value="signin" className="space-y-4">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={signInWithGoogle}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    "Connexion en cours..."
-                  ) : (
-                    <>
-                      <SiGoogle className="mr-2 h-4 w-4" />
-                      Se connecter avec Google
-                    </>
-                  )}
-                </Button>
+
+              <TabsContent value="signin">
+                <Form {...loginForm}>
+                  <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
+                    <FormField
+                      control={loginForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={loginForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mot de passe</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading ? "Connexion..." : "Se connecter"}
+                    </Button>
+                  </form>
+                </Form>
               </TabsContent>
-              <TabsContent value="signup" className="space-y-4">
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={signInWithGoogle}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    "Inscription en cours..."
-                  ) : (
-                    <>
-                      <SiGoogle className="mr-2 h-4 w-4" />
-                      S'inscrire avec Google
-                    </>
-                  )}
-                </Button>
+
+              <TabsContent value="signup">
+                <Form {...registerForm}>
+                  <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4">
+                    <FormField
+                      control={registerForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input type="email" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={registerForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Mot de passe</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={registerForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirmer le mot de passe</FormLabel>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="w-full" disabled={loading}>
+                      {loading ? "Inscription..." : "S'inscrire"}
+                    </Button>
+                  </form>
+                </Form>
               </TabsContent>
             </Tabs>
           </CardContent>
