@@ -27,24 +27,36 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mt-32 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="text-center">
-          <h3 className="mt-6 text-lg font-semibold">Analyse détaillée</h3>
-          <p className="mt-2 text-muted-foreground">
-            Obtenez des retours complets sur la structure, la théologie, la pertinence et l'engagement
-          </p>
+      <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="p-6 rounded-lg bg-card hover:shadow-lg transition-shadow">
+          <h3 className="text-xl font-bold mb-3 text-primary">Analyse complète</h3>
+          <p className="text-base mb-4">Évaluation détaillée de votre sermon selon plusieurs critères</p>
+          <ul className="space-y-2 text-muted-foreground">
+            <li>✓ Structure et cohérence</li>
+            <li>✓ Clarté théologique</li>
+            <li>✓ Pertinence et application</li>
+            <li>✓ Engagement et style</li>
+          </ul>
         </div>
-        <div className="text-center">
-          <h3 className="mt-6 text-lg font-semibold">Visualisations interactives</h3>
-          <p className="mt-2 text-muted-foreground">
-            Des graphiques interactifs pour visualiser vos points forts et axes d'amélioration
-          </p>
+        <div className="p-6 rounded-lg bg-card hover:shadow-lg transition-shadow">
+          <h3 className="text-xl font-bold mb-3 text-primary">Visualisation interactive</h3>
+          <p className="text-base mb-4">Graphiques et statistiques pour mieux comprendre vos forces et faiblesses</p>
+          <ul className="space-y-2 text-muted-foreground">
+            <li>✓ Graphique radar des compétences</li>
+            <li>✓ Histogramme des points forts</li>
+            <li>✓ Analyse comparative</li>
+            <li>✓ Suivi des progrès</li>
+          </ul>
         </div>
-        <div className="text-center">
-          <h3 className="mt-6 text-lg font-semibold">Suggestions concrètes</h3>
-          <p className="mt-2 text-muted-foreground">
-            Recevez des recommandations spécifiques pour améliorer l'efficacité de votre prédication
-          </p>
+        <div className="p-6 rounded-lg bg-card hover:shadow-lg transition-shadow">
+          <h3 className="text-xl font-bold mb-3 text-primary">Rapport détaillé</h3>
+          <p className="text-base mb-4">Téléchargez un rapport complet pour approfondir votre analyse</p>
+          <ul className="space-y-2 text-muted-foreground">
+            <li>✓ Rapport PDF téléchargeable</li>
+            <li>✓ Conseils personnalisés</li>
+            <li>✓ Suggestions d'amélioration</li>
+            <li>✓ Ressources recommandées</li>
+          </ul>
         </div>
       </div>
     </div>
