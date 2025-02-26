@@ -20,11 +20,40 @@ export const sermons = pgTable("sermons", {
 });
 
 export type SermonAnalysis = {
+  // Scores basiques
   structure: number;
   theology: number;
   relevance: number;
   engagement: number;
   overallScore: number;
+
+  // Analyses détaillées
+  keyPoints: string[];
+  biblicalAccuracy: {
+    score: number;
+    references: string[];
+    suggestions: string[];
+  };
+  deliveryAnalysis: {
+    clarity: number;
+    persuasiveness: number;
+    emotionalImpact: number;
+    suggestions: string[];
+  };
+  audienceEngagement: {
+    interactivity: number;
+    relatability: number;
+    practicalApplication: number;
+    suggestions: string[];
+  };
+  contentStructure: {
+    introduction: string;
+    mainPoints: string[];
+    conclusion: string;
+    flowScore: number;
+  };
+
+  // Résumé et suggestions
   strengths: string[];
   improvements: string[];
   summary: string;
