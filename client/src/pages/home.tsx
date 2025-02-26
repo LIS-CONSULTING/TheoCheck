@@ -13,23 +13,23 @@ export default function Home() {
         </p>
 
         <Link href="/analyze">
-          <Button size="lg" className="text-2xl px-12 py-8 transform hover:scale-105 transition-transform shadow-lg">
+          <Button size="lg" className="text-lg px-8 py-6 transform hover:scale-105 transition-transform">
             Analyser un sermon
           </Button>
         </Link>
 
-        <div className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-12">
-          <div className="p-8 rounded-xl bg-card hover:shadow-xl transition-shadow">
-            <h3 className="text-xl font-bold mb-4 text-primary">Analyse détaillée</h3>
-            <p className="text-lg">Structure, théologie, et pertinence évaluées avec précision</p>
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="p-6 rounded-lg bg-card">
+            <h3 className="text-lg font-semibold mb-2">Analyse détaillée</h3>
+            <p className="text-muted-foreground">Structure, théologie, et pertinence évaluées avec précision</p>
           </div>
-          <div className="p-8 rounded-xl bg-card hover:shadow-xl transition-shadow">
-            <h3 className="text-xl font-bold mb-4 text-primary">Suggestions concrètes</h3>
-            <p className="text-lg">Recommandations personnalisées pour améliorer votre message</p>
+          <div className="p-6 rounded-lg bg-card">
+            <h3 className="text-lg font-semibold mb-2">Suggestions concrètes</h3>
+            <p className="text-muted-foreground">Recommandations personnalisées pour améliorer votre message</p>
           </div>
-          <div className="p-8 rounded-xl bg-card hover:shadow-xl transition-shadow">
-            <h3 className="text-xl font-bold mb-4 text-primary">Rapport complet</h3>
-            <p className="text-lg">Visualisation claire des points forts et axes d'amélioration</p>
+          <div className="p-6 rounded-lg bg-card">
+            <h3 className="text-lg font-semibold mb-2">Rapport complet</h3>
+            <p className="text-muted-foreground">Visualisation claire des points forts et axes d'amélioration</p>
           </div>
         </div>
       </div>
