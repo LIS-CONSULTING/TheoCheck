@@ -4,19 +4,16 @@ import { Link } from "wouter";
 export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-24">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold mb-4">Notre Mission</h2>
-          <p className="mt-6 text-lg leading-8 text-muted-foreground">
-            Chez Sermon-GPT, nous croyons que chaque prédicateur a un message puissant à transmettre. Notre mission est d'aider les orateurs à affiner leur prédication en alliant la richesse de la tradition chrétienne aux outils les plus avancés de l'intelligence artificielle.
-          </p>
-          <h2 className="text-3xl font-bold mt-12 mb-4">Sermon-GPT : L'IA au service de votre prédication</h2>
-          <p className="text-lg leading-8 text-muted-foreground">
-            Prêchez avec clarté, puissance et impact. Sermon-GPT analyse vos sermons en profondeur et vous offre un retour précis sur la structure, la théologie, l'application pratique et l'engagement de votre message.
-          </p>
-          <p className="text-xl font-semibold mt-6">
-            Affinez votre prédication. Renforcez votre impact.
-          </p>
-          <div className="mt-10 flex items-center justify-center gap-x-6">
+      <div className="text-center">
+        <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
+          Améliorez vos sermons avec l'IA
+        </h1>
+        <p className="mt-6 text-lg leading-8 text-muted-foreground">
+          Soumettez votre sermon et recevez une analyse détaillée, des retours
+          personnalisés, et des suggestions concrètes pour améliorer votre
+          prédication.
+        </p>
+        <div className="mt-10 flex items-center justify-center gap-x-6">
           <Link href="/analyze">
             <Button size="lg" className="text-xl px-10 py-7 transform hover:scale-105 transition-transform">
               Analyser un sermon
@@ -28,7 +25,7 @@ export default function Home() {
             </Button>
           </Link>
         </div>
-        </div>
+      </div>
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="p-6 rounded-lg bg-card hover:bg-muted/50 transition-colors">
