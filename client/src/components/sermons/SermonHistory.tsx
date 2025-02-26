@@ -20,7 +20,9 @@ export function SermonHistory() {
 
   if (!sermons?.length) {
     return (
-      <div className="text-center py-12">
+      import { Link } from "wouter";
+
+<div className="text-center py-12">
         <p className="text-lg text-muted-foreground mb-4">Vous n'avez pas encore soumis de sermon.</p>
         <Link href="/analyze">
           <Button>Soumettre votre premier sermon</Button>
