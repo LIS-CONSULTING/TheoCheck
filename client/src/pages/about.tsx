@@ -3,38 +3,40 @@ import { Card, CardContent } from "@/components/ui/card";
 export default function About() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
-      <h1 className="mb-8 text-3xl font-bold">About Sermon GPT</h1>
-      
+      <h1 className="mb-8 text-3xl font-bold">À propos de Sermon GPT</h1>
+
       <Card className="mb-8">
         <CardContent className="pt-6">
-          <h2 className="mb-4 text-xl font-semibold">Our Mission</h2>
+          <h2 className="mb-4 text-xl font-semibold">Notre Mission</h2>
           <p className="text-muted-foreground">
-            Sermon GPT leverages artificial intelligence to help preachers enhance
-            their sermon delivery and impact. We believe in combining modern
-            technology with timeless truth to serve the church more effectively.
+            Sermon GPT utilise l'intelligence artificielle pour aider les
+            prédicateurs à améliorer leurs sermons et leur impact. Nous croyons
+            en l'alliance de la technologie moderne avec la vérité intemporelle
+            pour servir l'Église plus efficacement.
           </p>
         </CardContent>
       </Card>
 
       <Card className="mb-8">
         <CardContent className="pt-6">
-          <h2 className="mb-4 text-xl font-semibold">How It Works</h2>
+          <h2 className="mb-4 text-xl font-semibold">Comment ça marche</h2>
           <p className="text-muted-foreground">
-            Our AI-powered platform analyzes your sermons across multiple
-            dimensions including structure, theological clarity, practical
-            relevance, and engagement. You receive detailed feedback and
-            actionable suggestions to improve your preaching.
+            Notre plateforme alimentée par l'IA analyse vos sermons selon plusieurs
+            dimensions : structure, clarté théologique, pertinence pratique et
+            engagement. Vous recevez des retours détaillés et des suggestions
+            concrètes pour améliorer votre prédication.
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardContent className="pt-6">
-          <h2 className="mb-4 text-xl font-semibold">Privacy & Security</h2>
+          <h2 className="mb-4 text-xl font-semibold">Confidentialité et Sécurité</h2>
           <p className="text-muted-foreground">
-            We take the privacy of your sermon content seriously. All submissions
-            are encrypted and processed securely. Your content is never shared or
-            used for purposes other than analysis.
+            Nous prenons très au sérieux la confidentialité de vos sermons. Tous
+            les contenus sont cryptés et traités de manière sécurisée. Vos
+            contenus ne sont jamais partagés ni utilisés à d'autres fins que
+            l'analyse.
           </p>
         </CardContent>
       </Card>

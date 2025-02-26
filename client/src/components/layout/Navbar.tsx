@@ -14,13 +14,13 @@ export function Navbar() {
         </Link>
         <div className="ml-auto flex items-center space-x-4">
           <Link href="/analyze">
-            <a className="text-sm font-medium">Analyze</a>
+            <a className="text-sm font-medium">Analyser</a>
           </Link>
           <Link href="/history">
-            <a className="text-sm font-medium">History</a>
+            <a className="text-sm font-medium">Historique</a>
           </Link>
           <Link href="/about">
-            <a className="text-sm font-medium">About</a>
+            <a className="text-sm font-medium">À propos</a>
           </Link>
           <Link href="/contact">
             <a className="text-sm font-medium">Contact</a>
@@ -30,11 +30,11 @@ export function Navbar() {
               variant="ghost"
               onClick={() => auth.signOut()}
             >
-              Sign Out
+              Déconnexion
             </Button>
           ) : (
             <Link href="/login">
-              <Button>Sign In</Button>
+              <Button>Connexion</Button>
             </Link>
           )}
         </div>
