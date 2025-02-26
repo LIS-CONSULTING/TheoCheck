@@ -9,22 +9,19 @@ export default function About() {
         <CardContent className="pt-6">
           <h2 className="mb-4 text-xl font-semibold">Notre Mission</h2>
           <p className="text-muted-foreground">
-            Sermon GPT utilise l'intelligence artificielle pour aider les
-            prédicateurs à améliorer leurs sermons et leur impact. Nous croyons
-            en l'alliance de la technologie moderne avec la vérité intemporelle
-            pour servir l'Église plus efficacement.
+            Chez Sermon-GPT, nous croyons que chaque prédicateur a un message puissant à transmettre. Notre mission est d'aider les orateurs à affiner leur prédication en alliant la richesse de la tradition chrétienne aux outils les plus avancés de l'intelligence artificielle.
           </p>
         </CardContent>
       </Card>
 
       <Card>
         <CardContent className="pt-6">
-          <h2 className="mb-4 text-xl font-semibold">Comment ça marche</h2>
+          <h2 className="mb-4 text-xl font-semibold">Sermon-GPT : L'IA au service de votre prédication</h2>
           <p className="text-muted-foreground">
-            Notre plateforme alimentée par l'IA analyse vos sermons selon plusieurs
-            dimensions : structure, clarté théologique, pertinence pratique et
-            engagement. Vous recevez des retours détaillés et des suggestions
-            concrètes pour améliorer votre prédication.
+            Prêchez avec clarté, puissance et impact. Sermon-GPT analyse vos sermons en profondeur et vous offre un retour précis sur la structure, la théologie, l'application pratique et l'engagement de votre message.
+          </p>
+          <p className="text-muted-foreground mt-4 font-semibold">
+            Affinez votre prédication. Renforcez votre impact.
           </p>
         </CardContent>
       </Card>
