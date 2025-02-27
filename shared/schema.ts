@@ -31,8 +31,17 @@ export type SermonAnalysis = {
   strengths: string[];
   improvements: string[];
   summary: string;
-  topics: string[]; // Extracted topics from the sermon
-  theologicalTradition: string; // Identified theological tradition
+  topics: string[];
+  theologicalTradition: string;
+  keyScriptures: string[];
+  applicationPoints: string[];
+  exegeticalInsights: string[];
+  illustrationsUsed: string[];
+  audienceEngagement: {
+    emotional: number;
+    intellectual: number;
+    practical: number;
+  };
 };
 
 export type UserPreferences = {

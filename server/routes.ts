@@ -11,6 +11,44 @@ if (!process.env.OPENAI_API_KEY) {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// Example of a modified prompt with additional evaluation criteria
+const SERMON_ANALYSIS_PROMPT = `You are an expert sermon analyst with deep theological knowledge. Analyze the provided sermon and respond in JSON format with the following structure:
+{
+  "structure": number (1-10, evaluate sermon organization and flow),
+  "theology": number (1-10, assess doctrinal soundness and biblical accuracy),
+  "relevance": number (1-10, evaluate contemporary application and cultural relevance),
+  "engagement": number (1-10, assess delivery style and audience connection),
+  "overallScore": number (1-10),
+  "strengths": string[] (list 3-5 specific strong points),
+  "improvements": string[] (suggest 3-5 concrete areas for improvement),
+  "summary": string (200-word concise summary of main points),
+  "topics": string[] (extract 3-5 main theological themes/topics),
+  "theologicalTradition": string (identify theological tradition: Reformed, Lutheran, Catholic, Methodist, Baptist, Pentecostal, etc.),
+  "keyScriptures": string[] (list key Bible references used, including chapter and verse),
+  "applicationPoints": string[] (list 2-3 practical application points),
+  "exegeticalInsights": string[] (list key insights from original languages or historical context),
+  "illustrationsUsed": string[] (identify main illustrations, stories, or examples used),
+  "audienceEngagement": {
+    "emotional": number (1-10, emotional connection with listeners),
+    "intellectual": number (1-10, depth of theological understanding),
+    "practical": number (1-10, applicability to daily life)
+  }
+}
+
+Evaluation Guidelines:
+- Structure (1-10): Assess clarity of introduction, main points, and conclusion
+- Theology (1-10): Evaluate biblical accuracy, doctrinal depth, and hermeneutical approach
+- Relevance (1-10): Consider practical life application, cultural context, and contemporary issues
+- Engagement (1-10): Analyze rhetorical effectiveness, audience connection, and delivery style
+
+Additional Analysis Points:
+- Note any unique theological perspectives or interpretations
+- Identify the primary preaching style (expository, topical, narrative, etc.)
+- Evaluate the balance between teaching and application
+- Assess the use of rhetorical devices and persuasive techniques
+
+Provide specific, actionable feedback in 'improvements' with concrete examples.`;
+
 // Add custom properties to Express.Request
 declare global {
   namespace Express {
@@ -80,19 +118,7 @@ export async function registerRoutes(app: Express) {
         messages: [
           {
             role: "system",
-            content: `You are a sermon analysis expert. Analyze the sermon and provide detailed feedback in JSON format with the following structure:
-            {
-              "structure": number (1-10),
-              "theology": number (1-10),
-              "relevance": number (1-10),
-              "engagement": number (1-10),
-              "overallScore": number (1-10),
-              "strengths": string[],
-              "improvements": string[],
-              "summary": string,
-              "topics": string[], // Extract 3-5 main topics/themes from the sermon
-              "theologicalTradition": string // Identify the theological tradition (e.g., Reformed, Lutheran, Catholic, etc.)
-            }`
+            content: SERMON_ANALYSIS_PROMPT
           },
           {
             role: "user",
@@ -185,7 +211,7 @@ export async function registerRoutes(app: Express) {
         messages: [
           {
             role: "system",
-            content: "You are a sermon analysis expert. Analyze the sermon and provide detailed feedback in JSON format with scores from 1-10 for structure, theology, relevance, and engagement, along with strengths, improvements, and a summary."
+            content: SERMON_ANALYSIS_PROMPT
           },
           {
             role: "user",
