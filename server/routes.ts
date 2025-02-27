@@ -402,20 +402,37 @@ export async function registerRoutes(app: Express) {
           .text(analysis.summary)
           .moveDown();
 
-        // Strengths section with visual bullets
-        doc.fontSize(14)
+        // Strengths section with histogram
+        doc.moveDown()
+          .fontSize(14)
           .fillColor('#2d3748')
           .text('Points Forts')
           .moveDown(0.5);
 
-        analysis.strengths.forEach(strength => {
+        // Calculate the maximum width available for bars
+        const maxBarWidth = 400;
+        const barHeight = 20;
+        const barGap = 10;
+        const startX = doc.x;
+        const startY = doc.y;
+
+        // Draw bars for each strength with scaled widths
+        analysis.strengths.forEach((strength, index) => {
+          const barWidth = maxBarWidth * ((5 - index) / 5); // Scale bar width based on importance
+
+          // Draw the bar
+          doc.rect(startX, startY + (index * (barHeight + barGap)), barWidth, barHeight)
+            .fill('#48bb78');
+
+          // Add the text
           doc.fontSize(12)
-            .fillColor('#48bb78')
-            .text('•', { continued: true })
             .fillColor('#4a5568')
-            .text(` ${strength}`)
-            .moveDown(0.5);
+            .text(strength, startX + barWidth + 10, startY + (index * (barHeight + barGap)) + 4);
         });
+
+        // Move the cursor below the histogram
+        doc.moveDown(analysis.strengths.length + 2);
+
 
         // Areas for Improvement with recommendations
         doc.moveDown()
