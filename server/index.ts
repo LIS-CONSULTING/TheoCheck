@@ -13,7 +13,7 @@ try {
   // Format the private key correctly by ensuring proper line breaks
   const privateKey = process.env.FIREBASE_PRIVATE_KEY
     .replace(/\\n/g, '\n')
-    .replace(/\$\{newline\}/g, '\n')
+    .replace(/\${newline}/g, '\n')
     .replace(/\$newline/g, '\n');
 
   admin.initializeApp({
