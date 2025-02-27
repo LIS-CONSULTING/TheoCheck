@@ -22,19 +22,45 @@ interface SermonAnalysisProps {
 
 export function SermonAnalysisView({ analysis }: SermonAnalysisProps) {
   const chartData = [
-    { subject: "Structure", score: analysis.structure },
-    { subject: "Theology", score: analysis.theology },
-    { subject: "Relevance", score: analysis.relevance },
-    { subject: "Engagement", score: analysis.engagement },
+    { subject: "Fidélité Biblique", score: analysis.scores.fideliteBiblique },
+    { subject: "Structure", score: analysis.scores.structure },
+    { subject: "Application Pratique", score: analysis.scores.applicationPratique },
+    { subject: "Authenticité", score: analysis.scores.authenticite },
+    { subject: "Interactivité", score: analysis.scores.interactivite },
   ];
+
+  const handleDownloadPDF = async () => {
+    try {
+      const response = await fetch(`/api/sermons/${analysis.id}/pdf`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      if (!response.ok) throw new Error('Erreur lors du téléchargement du rapport');
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `analyse-sermon-${analysis.id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Erreur de téléchargement:', error);
+    }
+  };
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Analysis Results</CardTitle>
+          <CardTitle>Résultats de l'Analyse</CardTitle>
           <CardDescription>
-            Overall Score: {analysis.overallScore}/10
+            Note Globale: {analysis.overallScore}/10
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -58,7 +84,7 @@ export function SermonAnalysisView({ analysis }: SermonAnalysisProps) {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Strengths</CardTitle>
+            <CardTitle>Points Forts</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="list-inside list-disc space-y-2">
@@ -71,7 +97,7 @@ export function SermonAnalysisView({ analysis }: SermonAnalysisProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle>Areas for Improvement</CardTitle>
+            <CardTitle>Points à Améliorer</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="list-inside list-disc space-y-2">
@@ -85,13 +111,35 @@ export function SermonAnalysisView({ analysis }: SermonAnalysisProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Summary</CardTitle>
+          <CardTitle>Résumé</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">{analysis.summary}</p>
-          <Button className="mt-4">
+          <div className="mt-6 space-y-4">
+            <div>
+              <h4 className="font-semibold mb-2">Références Bibliques Clés</h4>
+              <ul className="list-inside list-disc">
+                {analysis.keyScriptures.map((scripture, i) => (
+                  <li key={i}>{scripture}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">Points d'Application</h4>
+              <ul className="list-inside list-disc">
+                {analysis.applicationPoints.map((point, i) => (
+                  <li key={i}>{point}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">Tradition Théologique</h4>
+              <p>{analysis.theologicalTradition}</p>
+            </div>
+          </div>
+          <Button onClick={handleDownloadPDF} className="mt-6">
             <Download className="mr-2 h-4 w-4" />
-            Download PDF Report
+            Télécharger le Rapport PDF
           </Button>
         </CardContent>
       </Card>

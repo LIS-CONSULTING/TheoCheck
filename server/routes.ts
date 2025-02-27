@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertSermonSchema, type SermonAnalysis } from "@shared/schema";
 import OpenAI from "openai";
 import admin from "firebase-admin";
+import PDFDocument from "pdfkit";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is required");
@@ -302,6 +303,98 @@ export async function registerRoutes(app: Express) {
     res.json({ message: "Message received" });
   });
 
+  app.get("/api/sermons/:id/pdf", authenticateUser, async (req, res) => {
+    try {
+      const sermonId = parseInt(req.params.id);
+      const sermon = await storage.getSermon(sermonId);
+
+      if (!sermon) {
+        return res.status(404).json({ message: "Sermon not found" });
+      }
+
+      if (sermon.userId !== req.user?.id) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+
+      // Create PDF
+      const doc = new PDFDocument();
+      doc.pipe(res);
+
+      // Set response headers
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=analyse-sermon-${sermonId}.pdf`);
+
+      // Add content to PDF
+      doc.fontSize(20).text('Analyse de Sermon', { align: 'center' });
+      doc.moveDown();
+
+      // Title and date
+      doc.fontSize(16).text(sermon.title);
+      doc.fontSize(12).text(`Date: ${new Date(sermon.createdAt).toLocaleDateString('fr-FR')}`);
+      doc.moveDown();
+
+      const analysis = sermon.analysis;
+      if (analysis) {
+        // Overall score
+        doc.fontSize(14).text(`Note Globale: ${analysis.overallScore}/10`);
+        doc.moveDown();
+
+        // Detailed scores
+        doc.fontSize(14).text('Scores Détaillés:');
+        doc.fontSize(12)
+          .text(`Fidélité Biblique: ${analysis.scores.fideliteBiblique}/10`)
+          .text(`Structure: ${analysis.scores.structure}/10`)
+          .text(`Application Pratique: ${analysis.scores.applicationPratique}/10`)
+          .text(`Authenticité: ${analysis.scores.authenticite}/10`)
+          .text(`Interactivité: ${analysis.scores.interactivite}/10`);
+        doc.moveDown();
+
+        // Strengths
+        doc.fontSize(14).text('Points Forts:');
+        analysis.strengths.forEach(strength => {
+          doc.fontSize(12).text(`• ${strength}`);
+        });
+        doc.moveDown();
+
+        // Improvements
+        doc.fontSize(14).text('Points à Améliorer:');
+        analysis.improvements.forEach(improvement => {
+          doc.fontSize(12).text(`• ${improvement}`);
+        });
+        doc.moveDown();
+
+        // Summary
+        doc.fontSize(14).text('Résumé:');
+        doc.fontSize(12).text(analysis.summary);
+        doc.moveDown();
+
+        // Biblical references
+        doc.fontSize(14).text('Références Bibliques:');
+        analysis.keyScriptures.forEach(scripture => {
+          doc.fontSize(12).text(`• ${scripture}`);
+        });
+        doc.moveDown();
+
+        // Application points
+        doc.fontSize(14).text("Points d'Application:");
+        analysis.applicationPoints.forEach(point => {
+          doc.fontSize(12).text(`• ${point}`);
+        });
+        doc.moveDown();
+
+        // Theological tradition
+        doc.fontSize(14).text('Tradition Théologique:');
+        doc.fontSize(12).text(analysis.theologicalTradition);
+      }
+
+      // Finalize PDF
+      doc.end();
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      res.status(500).json({ message: "Failed to generate PDF report" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
@@ -317,6 +410,8 @@ interface Sermon {
   id: number;
   userId: string;
   content: string;
+  title: string; // Added title
+  createdAt: Date; // Added createdAt
   analysis?: SermonAnalysis;
 }
 
