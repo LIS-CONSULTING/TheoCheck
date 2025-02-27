@@ -32,18 +32,27 @@ export function SermonForm() {
     onSuccess: (data) => {
       toast({
         title: "Success",
-        description: data.analysis 
-          ? "Your sermon has been analyzed successfully"
-          : "Your sermon has been submitted but analysis is still processing",
+        description: "Votre sermon a été soumis avec succès pour analyse",
       });
       form.reset();
-      // Redirect to the analysis view
       setLocation(`/history`);
     },
-    onError: (error) => {
+    onError: (error: any) => {
+      console.error("Sermon submission error:", error);
+      let errorMessage = "Une erreur s'est produite lors de l'analyse";
+
+      // Check if the error contains a message property
+      if (error.message) {
+        if (error.message.includes("429")) {
+          errorMessage = "Le service d'analyse est temporairement indisponible. Veuillez réessayer dans quelques minutes.";
+        } else if (error.message.includes("401")) {
+          errorMessage = "Erreur d'authentification. Veuillez vous reconnecter.";
+        }
+      }
+
       toast({
-        title: "Error",
-        description: error.message,
+        title: "Erreur",
+        description: errorMessage,
         variant: "destructive",
       });
     },
@@ -57,7 +66,7 @@ export function SermonForm() {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sermon Title</FormLabel>
+              <FormLabel>Titre du sermon</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -70,7 +79,7 @@ export function SermonForm() {
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sermon Content</FormLabel>
+              <FormLabel>Contenu du sermon</FormLabel>
               <FormControl>
                 <Textarea {...field} className="min-h-[300px]" />
               </FormControl>
@@ -83,9 +92,9 @@ export function SermonForm() {
           name="bibleReference"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Bible Reference (Optional)</FormLabel>
+              <FormLabel>Référence biblique (Optionnel)</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="e.g. John 3:16" />
+                <Input {...field} placeholder="e.g. Jean 3:16" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -95,10 +104,10 @@ export function SermonForm() {
           {mutation.isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Analyzing...
+              Analyse en cours...
             </>
           ) : (
-            "Analyze Sermon"
+            "Analyser le sermon"
           )}
         </Button>
       </form>

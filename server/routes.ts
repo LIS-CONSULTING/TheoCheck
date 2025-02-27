@@ -60,7 +60,7 @@ export async function registerRoutes(app: Express) {
         messages: [
           {
             role: "system",
-            content: "You are a sermon analysis expert. Analyze the sermon and provide detailed feedback in JSON format with scores from 1-10 for structure, theology, relevance, and engagement, along with strengths, improvements, and a summary."
+            content: `You are a sermon analysis expert. Analyze the sermon and provide detailed feedback in JSON format with scores from 1-10 for structure, theology, relevance, and engagement, along with strengths, improvements, and a summary.`
           },
           {
             role: "user",
