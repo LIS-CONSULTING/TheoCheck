@@ -2,26 +2,28 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import admin from "firebase-admin";
+import path, { dirname } from "path";
+import fs from "fs";
+import { fileURLToPath } from "url";
 
 // Initialize Firebase Admin
 try {
   log("Initializing Firebase Admin...");
-  if (!process.env.FIREBASE_PRIVATE_KEY || !process.env.FIREBASE_CLIENT_EMAIL || !process.env.FIREBASE_PROJECT_ID) {
+  if (!process.env.FIREBASE_PROJECT_ID) {
     throw new Error("Missing required Firebase environment variables");
   }
 
-  // Format the private key correctly by ensuring proper line breaks
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY
-    .replace(/\\n/g, '\n')
-    .replace(/\${newline}/g, '\n')
-    .replace(/\$newline/g, '\n');
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+
+  const serviceAccount = JSON.parse(
+    fs.readFileSync(
+      path.join(__dirname, "..", "attached_assets", "sermon-gpt-firebase-adminsdk-fbsvc-c97471f784.json")
+    ).toString()
+  );
 
   admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: privateKey,
-    }),
+    credential: admin.credential.cert(serviceAccount),
   });
   log("Firebase Admin initialized successfully");
 } catch (error: any) {
