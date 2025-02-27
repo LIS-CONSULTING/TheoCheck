@@ -26,6 +26,9 @@ interface SermonAnalysisProps {
 export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) {
   const { toast } = useToast();
 
+  // Debug logging
+  console.log("Analysis scores:", analysis.scores);
+
   // Transform the scores object into the format expected by the radar chart
   const chartData = [
     { subject: "Fidélité Biblique", score: analysis.scores.fideliteBiblique },
@@ -34,6 +37,9 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
     { subject: "Authenticité", score: analysis.scores.authenticite },
     { subject: "Interactivité", score: analysis.scores.interactivite },
   ];
+
+  // Debug logging
+  console.log("Chart data:", chartData);
 
   const handleDownloadPDF = async () => {
     try {
