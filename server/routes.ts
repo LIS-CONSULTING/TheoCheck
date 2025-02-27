@@ -50,8 +50,9 @@ export async function registerRoutes(app: Express) {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
+      console.log("Starting analysis for sermon:", sermonId);
       const response = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         messages: [
           {
             role: "system",
@@ -72,7 +73,10 @@ export async function registerRoutes(app: Express) {
       res.json(updatedSermon);
     } catch (error: any) {
       console.error("Analysis error:", error);
-      res.status(500).json({ message: "Failed to analyze sermon" });
+      res.status(500).json({ 
+        message: "Failed to analyze sermon",
+        details: error.message || "Unknown error"
+      });
     }
   });
 
@@ -110,7 +114,7 @@ export async function registerRoutes(app: Express) {
       console.log("Starting sermon analysis for:", sermon.id);
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         messages: [
           {
             role: "system",
@@ -132,7 +136,10 @@ export async function registerRoutes(app: Express) {
       res.json(updatedSermon);
     } catch (error: any) {
       console.error("Error in /api/sermons:", error);
-      res.status(500).json({ message: "Failed to analyze sermon" });
+      res.status(500).json({ 
+        message: "Failed to analyze sermon",
+        details: error.message || "Unknown error"
+      });
     }
   });
 
