@@ -9,11 +9,43 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Settings } from "lucide-react";
+import { Settings, Languages, Bell } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export function Navbar() {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [language, setLanguage] = useState("fr");
+  const [notifications, setNotifications] = useState({
+    email: true,
+    analysis: true,
+  });
+
+  const handleLanguageChange = (value: string) => {
+    setLanguage(value);
+    toast({
+      title: "Langue modifiée",
+      description: "Le changement sera effectif au prochain rechargement",
+    });
+  };
+
+  const toggleNotification = (type: "email" | "analysis") => {
+    setNotifications(prev => ({
+      ...prev,
+      [type]: !prev[type],
+    }));
+    toast({
+      title: "Préférences de notification mises à jour",
+      description: `Les notifications ${type === "email" ? "par email" : "d'analyse"} ont été ${notifications[type] ? "désactivées" : "activées"}`,
+    });
+  };
 
   return (
     <nav className="border-b bg-background">
@@ -30,9 +62,6 @@ export function Navbar() {
           </Link>
           <Link href="/about">
             <a className="text-sm font-medium">À propos</a>
-          </Link>
-          <Link href="/privacy">
-            <a className="text-sm font-medium">Confidentialité</a>
           </Link>
           <Link href="/contact">
             <a className="text-sm font-medium">Contact</a>
@@ -53,12 +82,32 @@ export function Navbar() {
                       Préférences utilisateur
                     </DropdownMenuItem>
                   </Link>
-                  <DropdownMenuItem>
-                    Langue et région
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    Notifications
-                  </DropdownMenuItem>
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <Languages className="mr-2 h-4 w-4" />
+                      <span>Langue et région</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuRadioGroup value={language} onValueChange={handleLanguageChange}>
+                        <DropdownMenuRadioItem value="fr">Français</DropdownMenuRadioItem>
+                        <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger>
+                      <Bell className="mr-2 h-4 w-4" />
+                      <span>Notifications</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent>
+                      <DropdownMenuItem onClick={() => toggleNotification("email")}>
+                        {notifications.email ? "Désactiver" : "Activer"} les notifications par email
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => toggleNotification("analysis")}>
+                        {notifications.analysis ? "Désactiver" : "Activer"} les notifications d'analyse
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
                 </DropdownMenuContent>
               </DropdownMenu>
               <Button
