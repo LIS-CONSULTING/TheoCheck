@@ -1,6 +1,33 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import admin from "firebase-admin";
+
+// Initialize Firebase Admin
+try {
+  log("Initializing Firebase Admin...");
+  if (!process.env.FIREBASE_PRIVATE_KEY || !process.env.FIREBASE_CLIENT_EMAIL || !process.env.FIREBASE_PROJECT_ID) {
+    throw new Error("Missing required Firebase environment variables");
+  }
+
+  // Format the private key correctly by ensuring proper line breaks
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY
+    .replace(/\\n/g, '\n')
+    .replace(/\$\{newline\}/g, '\n')
+    .replace(/\$newline/g, '\n');
+
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: privateKey,
+    }),
+  });
+  log("Firebase Admin initialized successfully");
+} catch (error: any) {
+  log(`Firebase Admin initialization error: ${error.message}`);
+  process.exit(1);
+}
 
 const app = express();
 app.use(express.json());
@@ -47,17 +74,12 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client
   const port = 5000;
   server.listen({
     port,

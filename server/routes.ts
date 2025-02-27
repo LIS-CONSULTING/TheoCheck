@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { storage } from "./storage";
 import { insertSermonSchema, type SermonAnalysis } from "@shared/schema";
 import OpenAI from "openai";
+import admin from "firebase-admin";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -17,9 +18,27 @@ declare global {
   }
 }
 
+// Firebase auth middleware
+const authenticateUser = async (req: Request, res: any, next: any) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith('Bearer ')) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const token = authHeader.split('Bearer ')[1];
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    req.user = { id: decodedToken.uid };
+    next();
+  } catch (error) {
+    console.error("Auth error:", error);
+    res.status(401).json({ message: "Unauthorized" });
+  }
+};
+
 export async function registerRoutes(app: Express) {
   // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
-  app.post("/api/analyze", async (req, res) => {
+  app.post("/api/analyze", authenticateUser, async (req, res) => {
     try {
       const sermonId = req.body.sermonId;
       const sermon = await storage.getSermon(sermonId);
@@ -58,7 +77,7 @@ export async function registerRoutes(app: Express) {
     }
   });
 
-  app.get("/api/sermons", async (req, res) => {
+  app.get("/api/sermons", authenticateUser, async (req, res) => {
     const userId = req.user?.id;
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });
@@ -68,7 +87,7 @@ export async function registerRoutes(app: Express) {
     res.json(sermons);
   });
 
-  app.post("/api/sermons", async (req, res) => {
+  app.post("/api/sermons", authenticateUser, async (req, res) => {
     const userId = req.user?.id;
     if (!userId) {
       return res.status(401).json({ message: "Unauthorized" });

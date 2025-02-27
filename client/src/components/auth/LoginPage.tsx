@@ -57,7 +57,7 @@ export function LoginPage() {
       setLocation("/");
       toast({
         title: "Connexion réussie",
-        description: "Bienvenue sur Sermon GPT",
+        description: "Bienvenue sur TheoCheck",
       });
     } catch (error: any) {
       console.error("Erreur de connexion:", error);
@@ -97,7 +97,7 @@ export function LoginPage() {
       setLocation("/");
       toast({
         title: "Inscription réussie",
-        description: "Bienvenue sur Sermon GPT",
+        description: "Bienvenue sur TheoCheck",
       });
     } catch (error: any) {
       console.error("Erreur d'inscription:", error);
@@ -125,7 +125,7 @@ export function LoginPage() {
         <Card className="lg:p-2">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">
-              Bienvenue sur Sermon GPT
+              Bienvenue sur TheoCheck
             </CardTitle>
             <CardDescription>
               Connectez-vous pour commencer à analyser vos sermons
@@ -228,7 +228,7 @@ export function LoginPage() {
 
         <div className="hidden lg:block">
           <div className="space-y-4 rounded-lg bg-primary/5 p-8">
-            <h2 className="text-2xl font-bold">Analysez vos sermons avec l'IA</h2>
+            <h2 className="text-2xl font-bold">Analysez vos sermons avec TheoCheck</h2>
             <ul className="space-y-2">
               <li className="flex items-center">
                 ✓ Analyse détaillée de la structure et du contenu
