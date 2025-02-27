@@ -5,22 +5,6 @@ import { insertSermonSchema, type SermonAnalysis } from "@shared/schema";
 import OpenAI from "openai";
 import admin from "firebase-admin";
 import PDFDocument from "pdfkit";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
-
-// Initialize Firebase Admin if not already initialized
-if (!admin.apps.length) {
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = path.dirname(__filename);
-
-  const serviceAccountPath = path.join(__dirname, "..", "attached_assets", "sermon-gpt-firebase-adminsdk-fbsvc-c97471f784.json");
-  const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath).toString());
-
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-}
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is required");
@@ -28,8 +12,94 @@ if (!process.env.OPENAI_API_KEY) {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Add Firestore initialization
-const db = admin.firestore();
+// Example of a modified prompt with additional evaluation criteria
+const SERMON_ANALYSIS_PROMPT = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
+
+Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
+{
+  "scores": {
+    "fideliteBiblique": number (1-10, évaluation de l'ancrage dans les Écritures et l'interprétation),
+    "structure": number (1-10, évaluation de la clarté et la simplicité),
+    "applicationPratique": number (1-10, évaluation de l'application concrète et engagement émotionnel),
+    "authenticite": number (1-10, évaluation de la passion et impact spirituel),
+    "interactivite": number (1-10, évaluation de la gestion du temps et pertinence contextuelle)
+  },
+  "overallScore": number (1-10),
+  "strengths": string[] (3-5 points forts spécifiques),
+  "improvements": string[] (3-5 suggestions concrètes d'amélioration),
+  "summary": string (résumé concis des points principaux),
+  "topics": string[] (3-5 thèmes théologiques principaux),
+  "theologicalTradition": string (tradition théologique identifiée),
+  "keyScriptures": string[] (références bibliques clés utilisées),
+  "applicationPoints": string[] (2-3 points d'application pratique),
+  "illustrationsUsed": string[] (illustrations principales utilisées),
+  "audienceEngagement": {
+    "emotional": number (1-10, connexion émotionnelle),
+    "intellectual": number (1-10, compréhension théologique),
+    "practical": number (1-10, applicabilité quotidienne)
+  }
+}
+
+Critères d'évaluation détaillés:
+
+1. Fidélité biblique et pertinence théologique (1-10):
+- Le sermon est-il solidement ancré dans les Écritures ?
+- Les passages sont-ils correctement interprétés et appliqués ?
+- Le message respecte-t-il la tradition chrétienne ?
+
+2. Structure, clarté et simplicité (1-10):
+- La prédication est-elle bien structurée avec une introduction, un développement et une conclusion clairs ?
+- Le message est-il facilement compréhensible et accessible pour l'auditoire ?
+- La présentation est-elle fluide et logique ?
+
+3. Application pratique et engagement émotionnel (1-10):
+- Le sermon propose-t-il des applications concrètes et utiles ?
+- Est-il capable de toucher les émotions de manière appropriée ?
+- Engage-t-il profondément l'auditoire ?
+
+4. Authenticité, passion et impact spirituel (1-10):
+- Le prédicateur semble-t-il sincère et passionné ?
+- Le sermon inspire-t-il une réflexion personnelle ?
+- Encourage-t-il une transformation spirituelle ?
+
+5. Interactivité et pertinence contextuelle (1-10):
+- Le sermon encourage-t-il la participation active ?
+- Le message est-il adapté au contexte culturel et spirituel ?
+- Le temps est-il bien géré pour maintenir l'attention ?
+
+Ton et approche:
+- Sois professionnel, strict et rigoureux
+- Ne laisse pas passer les éléments considérés comme inadéquats
+- Fournis des suggestions concrètes et actionnables pour l'amélioration`;
+
+// Add custom properties to Express.Request
+declare global {
+  namespace Express {
+    interface Request {
+      user?: {
+        id: string;
+      };
+    }
+  }
+}
+
+// Firebase auth middleware
+const authenticateUser = async (req: Request, res: any, next: any) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader?.startsWith('Bearer ')) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const token = authHeader.split('Bearer ')[1];
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    req.user = { id: decodedToken.uid };
+    next();
+  } catch (error) {
+    console.error("Auth error:", error);
+    res.status(401).json({ message: "Unauthorized" });
+  }
+};
 
 export async function registerRoutes(app: Express) {
   app.get("/api/sermons/:id", authenticateUser, async (req, res) => {
@@ -156,14 +226,9 @@ export async function registerRoutes(app: Express) {
         bibleReference: parsed.data.bibleReference || null,
       });
 
-      // Store sermon in Firestore
-      await db.collection('sermons').doc(sermon.id.toString()).set({
-        ...sermon,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
       // Immediately analyze the sermon
       console.log("Starting sermon analysis for:", sermon.id);
+
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
@@ -184,12 +249,6 @@ export async function registerRoutes(app: Express) {
       console.log("OpenAI Response received");
       const analysis = JSON.parse(response.choices[0].message.content) as SermonAnalysis;
       const updatedSermon = await storage.updateSermonAnalysis(sermon.id, analysis);
-
-      // Update Firestore with analysis results
-      await db.collection('sermons').doc(sermon.id.toString()).update({
-        analysis,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
 
       console.log("Analysis completed for sermon:", sermon.id);
       res.json(updatedSermon);
@@ -213,6 +272,7 @@ export async function registerRoutes(app: Express) {
     }
   });
 
+  // Add a new route for sermon recommendations
   app.get("/api/sermons/recommendations", authenticateUser, async (req, res) => {
     try {
       const user = await storage.getUserByFirebaseId(req.user!.id);
@@ -515,93 +575,4 @@ function calculateRecommendationScore(sermon: Sermon, preferences: UserPreferenc
   }
 
   return score;
-}
-
-// Firebase auth middleware
-const authenticateUser = async (req: Request, res: any, next: any) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader?.startsWith('Bearer ')) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const token = authHeader.split('Bearer ')[1];
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    req.user = { id: decodedToken.uid };
-    next();
-  } catch (error) {
-    console.error("Auth error:", error);
-    res.status(401).json({ message: "Unauthorized" });
-  }
-};
-
-// Example of a modified prompt with additional evaluation criteria
-const SERMON_ANALYSIS_PROMPT = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
-
-Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
-{
-  "scores": {
-    "fideliteBiblique": number (1-10, évaluation de l'ancrage dans les Écritures et l'interprétation),
-    "structure": number (1-10, évaluation de la clarté et la simplicité),
-    "applicationPratique": number (1-10, évaluation de l'application concrète et engagement émotionnel),
-    "authenticite": number (1-10, évaluation de la passion et impact spirituel),
-    "interactivite": number (1-10, évaluation de la gestion du temps et pertinence contextuelle)
-  },
-  "overallScore": number (1-10),
-  "strengths": string[] (3-5 points forts spécifiques),
-  "improvements": string[] (3-5 suggestions concrètes d'amélioration),
-  "summary": string (résumé concis des points principaux),
-  "topics": string[] (3-5 thèmes théologiques principaux),
-  "theologicalTradition": string (tradition théologique identifiée),
-  "keyScriptures": string[] (références bibliques clés utilisées),
-  "applicationPoints": string[] (2-3 points d'application pratique),
-  "illustrationsUsed": string[] (illustrations principales utilisées),
-  "audienceEngagement": {
-    "emotional": number (1-10, connexion émotionnelle),
-    "intellectual": number (1-10, compréhension théologique),
-    "practical": number (1-10, applicabilité quotidienne)
-  }
-}
-
-Critères d'évaluation détaillés:
-
-1. Fidélité biblique et pertinence théologique (1-10):
-- Le sermon est-il solidement ancré dans les Écritures ?
-- Les passages sont-ils correctement interprétés et appliqués ?
-- Le message respecte-t-il la tradition chrétienne ?
-
-2. Structure, clarté et simplicité (1-10):
-- La prédication est-elle bien structurée avec une introduction, un développement et une conclusion clairs ?
-- Le message est-il facilement compréhensible et accessible pour l'auditoire ?
-- La présentation est-elle fluide et logique ?
-
-3. Application pratique et engagement émotionnel (1-10):
-- Le sermon propose-t-il des applications concrètes et utiles ?
-- Est-il capable de toucher les émotions de manière appropriée ?
-- Engage-t-il profondément l'auditoire ?
-
-4. Authenticité, passion et impact spirituel (1-10):
-- Le prédicateur semble-t-il sincère et passionné ?
-- Le sermon inspire-t-il une réflexion personnelle ?
-- Encourage-t-il une transformation spirituelle ?
-
-5. Interactivité et pertinence contextuelle (1-10):
-- Le sermon encourage-t-il la participation active ?
-- Le message est-il adapté au contexte culturel et spirituel ?
-- Le temps est-il bien géré pour maintenir l'attention ?
-
-Ton et approche:
-- Sois professionnel, strict et rigoureux
-- Ne laisse pas passer les éléments considérés comme inadéquats
-- Fournis des suggestions concrètes et actionnables pour l'amélioration`;
-
-// Add custom properties to Express.Request
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-      };
-    }
-  }
 }
