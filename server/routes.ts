@@ -12,42 +12,64 @@ if (!process.env.OPENAI_API_KEY) {
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Example of a modified prompt with additional evaluation criteria
-const SERMON_ANALYSIS_PROMPT = `You are an expert sermon analyst with deep theological knowledge. Analyze the provided sermon and respond in JSON format with the following structure:
+const SERMON_ANALYSIS_PROMPT = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
+
+Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
 {
-  "structure": number (1-10, evaluate sermon organization and flow),
-  "theology": number (1-10, assess doctrinal soundness and biblical accuracy),
-  "relevance": number (1-10, evaluate contemporary application and cultural relevance),
-  "engagement": number (1-10, assess delivery style and audience connection),
+  "scores": {
+    "fideliteBiblique": number (1-10, évaluation de l'ancrage dans les Écritures et l'interprétation),
+    "structure": number (1-10, évaluation de la clarté et la simplicité),
+    "applicationPratique": number (1-10, évaluation de l'application concrète et engagement émotionnel),
+    "authenticite": number (1-10, évaluation de la passion et impact spirituel),
+    "interactivite": number (1-10, évaluation de la gestion du temps et pertinence contextuelle)
+  },
   "overallScore": number (1-10),
-  "strengths": string[] (list 3-5 specific strong points),
-  "improvements": string[] (suggest 3-5 concrete areas for improvement),
-  "summary": string (200-word concise summary of main points),
-  "topics": string[] (extract 3-5 main theological themes/topics),
-  "theologicalTradition": string (identify theological tradition: Reformed, Lutheran, Catholic, Methodist, Baptist, Pentecostal, etc.),
-  "keyScriptures": string[] (list key Bible references used, including chapter and verse),
-  "applicationPoints": string[] (list 2-3 practical application points),
-  "exegeticalInsights": string[] (list key insights from original languages or historical context),
-  "illustrationsUsed": string[] (identify main illustrations, stories, or examples used),
+  "strengths": string[] (3-5 points forts spécifiques),
+  "improvements": string[] (3-5 suggestions concrètes d'amélioration),
+  "summary": string (résumé concis des points principaux),
+  "topics": string[] (3-5 thèmes théologiques principaux),
+  "theologicalTradition": string (tradition théologique identifiée),
+  "keyScriptures": string[] (références bibliques clés utilisées),
+  "applicationPoints": string[] (2-3 points d'application pratique),
+  "illustrationsUsed": string[] (illustrations principales utilisées),
   "audienceEngagement": {
-    "emotional": number (1-10, emotional connection with listeners),
-    "intellectual": number (1-10, depth of theological understanding),
-    "practical": number (1-10, applicability to daily life)
+    "emotional": number (1-10, connexion émotionnelle),
+    "intellectual": number (1-10, compréhension théologique),
+    "practical": number (1-10, applicabilité quotidienne)
   }
 }
 
-Evaluation Guidelines:
-- Structure (1-10): Assess clarity of introduction, main points, and conclusion
-- Theology (1-10): Evaluate biblical accuracy, doctrinal depth, and hermeneutical approach
-- Relevance (1-10): Consider practical life application, cultural context, and contemporary issues
-- Engagement (1-10): Analyze rhetorical effectiveness, audience connection, and delivery style
+Critères d'évaluation détaillés:
 
-Additional Analysis Points:
-- Note any unique theological perspectives or interpretations
-- Identify the primary preaching style (expository, topical, narrative, etc.)
-- Evaluate the balance between teaching and application
-- Assess the use of rhetorical devices and persuasive techniques
+1. Fidélité biblique et pertinence théologique (1-10):
+- Le sermon est-il solidement ancré dans les Écritures ?
+- Les passages sont-ils correctement interprétés et appliqués ?
+- Le message respecte-t-il la tradition chrétienne ?
 
-Provide specific, actionable feedback in 'improvements' with concrete examples.`;
+2. Structure, clarté et simplicité (1-10):
+- La prédication est-elle bien structurée avec une introduction, un développement et une conclusion clairs ?
+- Le message est-il facilement compréhensible et accessible pour l'auditoire ?
+- La présentation est-elle fluide et logique ?
+
+3. Application pratique et engagement émotionnel (1-10):
+- Le sermon propose-t-il des applications concrètes et utiles ?
+- Est-il capable de toucher les émotions de manière appropriée ?
+- Engage-t-il profondément l'auditoire ?
+
+4. Authenticité, passion et impact spirituel (1-10):
+- Le prédicateur semble-t-il sincère et passionné ?
+- Le sermon inspire-t-il une réflexion personnelle ?
+- Encourage-t-il une transformation spirituelle ?
+
+5. Interactivité et pertinence contextuelle (1-10):
+- Le sermon encourage-t-il la participation active ?
+- Le message est-il adapté au contexte culturel et spirituel ?
+- Le temps est-il bien géré pour maintenir l'attention ?
+
+Ton et approche:
+- Sois professionnel, strict et rigoureux
+- Ne laisse pas passer les éléments considérés comme inadéquats
+- Fournis des suggestions concrètes et actionnables pour l'amélioration`;
 
 // Add custom properties to Express.Request
 declare global {

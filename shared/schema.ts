@@ -23,10 +23,13 @@ export const sermons = pgTable("sermons", {
 });
 
 export type SermonAnalysis = {
-  structure: number;
-  theology: number;
-  relevance: number;
-  engagement: number;
+  scores: {
+    fideliteBiblique: number;
+    structure: number;
+    applicationPratique: number;
+    authenticite: number;
+    interactivite: number;
+  };
   overallScore: number;
   strengths: string[];
   improvements: string[];
@@ -35,7 +38,6 @@ export type SermonAnalysis = {
   theologicalTradition: string;
   keyScriptures: string[];
   applicationPoints: string[];
-  exegeticalInsights: string[];
   illustrationsUsed: string[];
   audienceEngagement: {
     emotional: number;
