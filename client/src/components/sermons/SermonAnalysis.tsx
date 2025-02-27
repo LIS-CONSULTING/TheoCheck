@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { auth } from "@/lib/firebase";
+import { useTranslation } from "react-i18next";
 import {
   Radar,
   RadarChart,
@@ -25,17 +26,18 @@ interface SermonAnalysisProps {
 
 export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) {
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   // Debug logging
   console.log("Analysis scores:", analysis.scores);
 
   // Transform the scores object into the format expected by the radar chart
   const chartData = [
-    { subject: "Fidélité Biblique", score: analysis.scores.fideliteBiblique },
-    { subject: "Structure", score: analysis.scores.structure },
-    { subject: "Application Pratique", score: analysis.scores.applicationPratique },
-    { subject: "Authenticité", score: analysis.scores.authenticite },
-    { subject: "Interactivité", score: analysis.scores.interactivite },
+    { subject: t("analysis.scores.biblicalFidelity"), score: analysis.scores.fideliteBiblique },
+    { subject: t("analysis.scores.structure"), score: analysis.scores.structure },
+    { subject: t("analysis.scores.practicalApplication"), score: analysis.scores.applicationPratique },
+    { subject: t("analysis.scores.authenticity"), score: analysis.scores.authenticite },
+    { subject: t("analysis.scores.interactivity"), score: analysis.scores.interactivite },
   ];
 
   // Debug logging
@@ -45,7 +47,7 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
     try {
       const token = await auth.currentUser?.getIdToken();
       if (!token) {
-        throw new Error('Veuillez vous connecter pour télécharger le rapport');
+        throw new Error(t("errors.loginRequired"));
       }
 
       const response = await fetch(`/api/sermons/${sermonId}/pdf`, {
@@ -55,7 +57,7 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
         },
       });
 
-      if (!response.ok) throw new Error('Erreur lors du téléchargement du rapport');
+      if (!response.ok) throw new Error(t("errors.pdfDownloadFailed"));
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -67,10 +69,10 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
-      console.error('Erreur de téléchargement:', error);
+      console.error('Download error:', error);
       toast({
-        title: "Erreur",
-        description: error instanceof Error ? error.message : "Erreur lors du téléchargement du rapport",
+        title: t("errors.error"),
+        description: error instanceof Error ? error.message : t("errors.pdfDownloadFailed"),
         variant: "destructive",
       });
     }
@@ -80,9 +82,9 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Résultats de l'Analyse</CardTitle>
+          <CardTitle>{t("analysis.results")}</CardTitle>
           <CardDescription>
-            Note Globale: {analysis.overallScore}/10
+            {t("analysis.overallScore")}: {analysis.overallScore}/10
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -106,7 +108,7 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Points Forts</CardTitle>
+            <CardTitle>{t("analysis.strengths")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="list-inside list-disc space-y-2">
@@ -119,7 +121,7 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
 
         <Card>
           <CardHeader>
-            <CardTitle>Points à Améliorer</CardTitle>
+            <CardTitle>{t("analysis.improvements")}</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="list-inside list-disc space-y-2">
@@ -133,13 +135,13 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
 
       <Card>
         <CardHeader>
-          <CardTitle>Résumé</CardTitle>
+          <CardTitle>{t("analysis.summary")}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground">{analysis.summary}</p>
           <div className="mt-6 space-y-4">
             <div>
-              <h4 className="font-semibold mb-2">Références Bibliques Clés</h4>
+              <h4 className="font-semibold mb-2">{t("analysis.keyScriptures")}</h4>
               <ul className="list-inside list-disc">
                 {analysis.keyScriptures.map((scripture, i) => (
                   <li key={i}>{scripture}</li>
@@ -147,7 +149,7 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-2">Points d'Application</h4>
+              <h4 className="font-semibold mb-2">{t("analysis.applicationPoints")}</h4>
               <ul className="list-inside list-disc">
                 {analysis.applicationPoints.map((point, i) => (
                   <li key={i}>{point}</li>
@@ -155,13 +157,13 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold mb-2">Tradition Théologique</h4>
+              <h4 className="font-semibold mb-2">{t("analysis.theologicalTradition")}</h4>
               <p>{analysis.theologicalTradition}</p>
             </div>
           </div>
           <Button onClick={handleDownloadPDF} className="mt-6">
             <Download className="mr-2 h-4 w-4" />
-            Télécharger le Rapport PDF
+            {t("analysis.downloadPdf")}
           </Button>
         </CardContent>
       </Card>

@@ -13,7 +13,7 @@ if (!process.env.OPENAI_API_KEY) {
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Example of a modified prompt with additional evaluation criteria
-const SERMON_ANALYSIS_PROMPT = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
+const SERMON_ANALYSIS_PROMPT_FR = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
 
 Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
 {
@@ -38,39 +38,34 @@ Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
     "intellectual": number (1-10, compréhension théologique),
     "practical": number (1-10, applicabilité quotidienne)
   }
-}
+}`;
 
-Critères d'évaluation détaillés:
+const SERMON_ANALYSIS_PROMPT_EN = `Mission: TheoCheck is designed to provide a comprehensive and constructive evaluation of Christian sermons. Be as objective as possible: the same sermon should always receive the same score.
 
-1. Fidélité biblique et pertinence théologique (1-10):
-- Le sermon est-il solidement ancré dans les Écritures ?
-- Les passages sont-ils correctement interprétés et appliqués ?
-- Le message respecte-t-il la tradition chrétienne ?
-
-2. Structure, clarté et simplicité (1-10):
-- La prédication est-elle bien structurée avec une introduction, un développement et une conclusion clairs ?
-- Le message est-il facilement compréhensible et accessible pour l'auditoire ?
-- La présentation est-elle fluide et logique ?
-
-3. Application pratique et engagement émotionnel (1-10):
-- Le sermon propose-t-il des applications concrètes et utiles ?
-- Est-il capable de toucher les émotions de manière appropriée ?
-- Engage-t-il profondément l'auditoire ?
-
-4. Authenticité, passion et impact spirituel (1-10):
-- Le prédicateur semble-t-il sincère et passionné ?
-- Le sermon inspire-t-il une réflexion personnelle ?
-- Encourage-t-il une transformation spirituelle ?
-
-5. Interactivité et pertinence contextuelle (1-10):
-- Le sermon encourage-t-il la participation active ?
-- Le message est-il adapté au contexte culturel et spirituel ?
-- Le temps est-il bien géré pour maintenir l'attention ?
-
-Ton et approche:
-- Sois professionnel, strict et rigoureux
-- Ne laisse pas passer les éléments considérés comme inadéquats
-- Fournis des suggestions concrètes et actionnables pour l'amélioration`;
+Analyze the provided sermon and respond in JSON format with the following structure:
+{
+  "scores": {
+    "biblicalFidelity": number (1-10, evaluation of Scripture anchoring and interpretation),
+    "structure": number (1-10, evaluation of clarity and simplicity),
+    "practicalApplication": number (1-10, evaluation of concrete application and emotional engagement),
+    "authenticity": number (1-10, evaluation of passion and spiritual impact),
+    "interactivity": number (1-10, evaluation of time management and contextual relevance)
+  },
+  "overallScore": number (1-10),
+  "strengths": string[] (3-5 specific strengths),
+  "improvements": string[] (3-5 concrete improvement suggestions),
+  "summary": string (concise summary of main points),
+  "topics": string[] (3-5 main theological themes),
+  "theologicalTradition": string (identified theological tradition),
+  "keyScriptures": string[] (key biblical references used),
+  "applicationPoints": string[] (2-3 practical application points),
+  "illustrationsUsed": string[] (main illustrations used),
+  "audienceEngagement": {
+    "emotional": number (1-10, emotional connection),
+    "intellectual": number (1-10, theological understanding),
+    "practical": number (1-10, daily applicability)
+  }
+}`;
 
 // Add custom properties to Express.Request
 declare global {
@@ -125,6 +120,7 @@ export async function registerRoutes(app: Express) {
   app.post("/api/analyze", authenticateUser, async (req, res) => {
     try {
       const sermonId = req.body.sermonId;
+      const language = req.body.language || 'fr'; // Get language from request
       const sermon = await storage.getSermon(sermonId);
 
       if (!sermon) {
@@ -135,13 +131,13 @@ export async function registerRoutes(app: Express) {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
-      console.log("Starting analysis for sermon:", sermonId);
+      console.log(`Starting analysis for sermon: ${sermonId} in language: ${language}`);
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
           {
             role: "system",
-            content: SERMON_ANALYSIS_PROMPT
+            content: language === 'fr' ? SERMON_ANALYSIS_PROMPT_FR : SERMON_ANALYSIS_PROMPT_EN
           },
           {
             role: "user",
@@ -234,7 +230,7 @@ export async function registerRoutes(app: Express) {
         messages: [
           {
             role: "system",
-            content: SERMON_ANALYSIS_PROMPT
+            content: SERMON_ANALYSIS_PROMPT_FR //Default to French
           },
           {
             role: "user",
