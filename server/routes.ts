@@ -312,18 +312,24 @@ export async function registerRoutes(app: Express) {
         status: 'new' // For tracking purposes
       };
 
+      console.log("Attempting to save contact form data:", contactData);
+
       // Add to 'contacts' collection
-      await db.collection('contacts').add(contactData);
+      const docRef = await db.collection('contacts').add(contactData);
+
+      console.log("Contact form saved successfully with ID:", docRef.id);
 
       res.json({
         success: true,
-        message: "Message received successfully"
+        message: "Message received successfully",
+        id: docRef.id // Return the document ID for reference
       });
     } catch (error) {
       console.error("Error saving contact form:", error);
       res.status(500).json({
         success: false,
-        message: "Failed to save contact form"
+        message: "Failed to save contact form",
+        error: error.message
       });
     }
   });
