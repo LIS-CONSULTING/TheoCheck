@@ -31,17 +31,17 @@ export function SermonForm() {
     },
     onSuccess: (data) => {
       toast({
-        title: "Success",
+        title: "Succès",
         description: "Votre sermon a été soumis avec succès pour analyse",
       });
       form.reset();
-      setLocation(`/history`);
+      // Redirect to the analysis page
+      setLocation(`/analysis/${data.id}`);
     },
     onError: (error: any) => {
       console.error("Sermon submission error:", error);
       let errorMessage = "Une erreur s'est produite lors de l'analyse";
 
-      // Check if the error contains a message property
       if (error.message) {
         if (error.message.includes("429")) {
           errorMessage = "Le service d'analyse est temporairement indisponible. Veuillez réessayer dans quelques minutes.";

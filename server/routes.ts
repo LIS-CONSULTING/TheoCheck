@@ -41,6 +41,26 @@ const authenticateUser = async (req: Request, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express) {
+  app.get("/api/sermons/:id", authenticateUser, async (req, res) => {
+    try {
+      const sermonId = parseInt(req.params.id);
+      const sermon = await storage.getSermon(sermonId);
+
+      if (!sermon) {
+        return res.status(404).json({ message: "Sermon not found" });
+      }
+
+      if (sermon.userId !== req.user?.id) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+
+      res.json(sermon);
+    } catch (error) {
+      console.error("Error fetching sermon:", error);
+      res.status(500).json({ message: "Failed to fetch sermon" });
+    }
+  });
+
   app.post("/api/analyze", authenticateUser, async (req, res) => {
     try {
       const sermonId = req.body.sermonId;
@@ -90,7 +110,7 @@ export async function registerRoutes(app: Express) {
         status = 401;
       }
 
-      res.status(status).json({ 
+      res.status(status).json({
         message,
         details: error.message || "Unknown error"
       });
@@ -166,7 +186,7 @@ export async function registerRoutes(app: Express) {
         status = 401;
       }
 
-      res.status(status).json({ 
+      res.status(status).json({
         message,
         details: error.message || "Unknown error"
       });
