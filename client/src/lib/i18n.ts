@@ -5,7 +5,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // French translations
 const fr = {
   common: {
-    analyze: "Analyser un sermon",
+    analyze: "Analyser votre sermon",
     learnMore: "En savoir plus",
     login: "Connexion",
     logout: "Déconnexion",
