@@ -10,10 +10,12 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function SermonForm() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
+  const { t } = useTranslation();
 
   const form = useForm<InsertSermon>({
     resolver: zodResolver(insertSermonSchema),
@@ -31,8 +33,8 @@ export function SermonForm() {
     },
     onSuccess: (data) => {
       toast({
-        title: "Succès",
-        description: "Votre sermon a été soumis avec succès pour analyse",
+        title: t("sermons.success"),
+        description: t("sermons.submissionSuccess"),
       });
       form.reset();
       // Redirect to the analysis page
@@ -40,18 +42,18 @@ export function SermonForm() {
     },
     onError: (error: any) => {
       console.error("Sermon submission error:", error);
-      let errorMessage = "Une erreur s'est produite lors de l'analyse";
+      let errorMessage = t("sermons.analysisError");
 
       if (error.message) {
         if (error.message.includes("429")) {
-          errorMessage = "Le service d'analyse est temporairement indisponible. Veuillez réessayer dans quelques minutes.";
+          errorMessage = t("sermons.serviceUnavailable");
         } else if (error.message.includes("401")) {
-          errorMessage = "Erreur d'authentification. Veuillez vous reconnecter.";
+          errorMessage = t("sermons.authError");
         }
       }
 
       toast({
-        title: "Erreur",
+        title: t("common.error"),
         description: errorMessage,
         variant: "destructive",
       });
@@ -66,7 +68,7 @@ export function SermonForm() {
           name="title"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Titre du sermon</FormLabel>
+              <FormLabel>{t("sermons.form.title")}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -79,7 +81,7 @@ export function SermonForm() {
           name="content"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Contenu du sermon</FormLabel>
+              <FormLabel>{t("sermons.form.content")}</FormLabel>
               <FormControl>
                 <Textarea {...field} className="min-h-[300px]" />
               </FormControl>
@@ -92,9 +94,9 @@ export function SermonForm() {
           name="bibleReference"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Référence biblique (Optionnel)</FormLabel>
+              <FormLabel>{t("sermons.form.bibleReference")}</FormLabel>
               <FormControl>
-                <Input {...field} placeholder="e.g. Jean 3:16" />
+                <Input {...field} placeholder={t("sermons.form.bibleReferencePlaceholder")} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -104,10 +106,10 @@ export function SermonForm() {
           {mutation.isPending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Analyse en cours...
+              {t("sermons.form.analyzing")}
             </>
           ) : (
-            "Analyser le sermon"
+            t("sermons.form.submit")
           )}
         </Button>
       </form>

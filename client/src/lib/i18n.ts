@@ -17,6 +17,7 @@ const fr = {
     about: "À propos",
     languageChanged: "Langue modifiée",
     languageChangeEffect: "Les changements sont appliqués",
+    error: "Erreur"
   },
   home: {
     title: "Analysez vos sermons avec l'IA",
@@ -52,6 +53,21 @@ const fr = {
           "Ressources recommandées"
         ]
       }
+    }
+  },
+  sermons: {
+    success: "Succès",
+    submissionSuccess: "Votre sermon a été soumis avec succès pour analyse",
+    analysisError: "Une erreur s'est produite lors de l'analyse",
+    serviceUnavailable: "Le service d'analyse est temporairement indisponible. Veuillez réessayer dans quelques minutes.",
+    authError: "Erreur d'authentification. Veuillez vous reconnecter.",
+    form: {
+      title: "Titre du sermon",
+      content: "Contenu du sermon",
+      bibleReference: "Référence biblique (Optionnel)",
+      bibleReferencePlaceholder: "ex: Jean 3:16",
+      analyzing: "Analyse en cours...",
+      submit: "Analyser le sermon"
     }
   },
   analysis: {
@@ -116,8 +132,8 @@ const fr = {
 // English translations
 const en = {
   common: {
-    analyze: "Analyze a Sermon",
-    learnMore: "Learn More",
+    analyze: "Analyze your sermon",
+    learnMore: "Learn more",
     login: "Login",
     logout: "Logout",
     settings: "Settings",
@@ -128,6 +144,7 @@ const en = {
     about: "About",
     languageChanged: "Language Changed",
     languageChangeEffect: "Changes have been applied",
+    error: "Error"
   },
   home: {
     title: "Analyze Your Sermons with AI",
@@ -163,6 +180,21 @@ const en = {
           "Recommended resources"
         ]
       }
+    }
+  },
+  sermons: {
+    success: "Success",
+    submissionSuccess: "Your sermon has been successfully submitted for analysis",
+    analysisError: "An error occurred during analysis",
+    serviceUnavailable: "The analysis service is temporarily unavailable. Please try again in a few minutes.",
+    authError: "Authentication error. Please log in again.",
+    form: {
+      title: "Sermon Title",
+      content: "Sermon Content",
+      bibleReference: "Bible Reference (Optional)",
+      bibleReferencePlaceholder: "e.g. John 3:16",
+      analyzing: "Analysis in progress...",
+      submit: "Analyze Sermon"
     }
   },
   analysis: {
