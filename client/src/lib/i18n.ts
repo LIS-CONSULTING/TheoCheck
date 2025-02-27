@@ -55,6 +55,7 @@ const fr = {
     }
   },
   analysis: {
+    results: "Résultats de l'Analyse",
     overallScore: "Note Globale",
     strengths: "Points Forts",
     improvements: "Points à Améliorer",
@@ -62,7 +63,14 @@ const fr = {
     keyScriptures: "Références Bibliques Clés",
     applicationPoints: "Points d'Application",
     theologicalTradition: "Tradition Théologique",
-    downloadPdf: "Télécharger le Rapport PDF"
+    downloadPdf: "Télécharger le Rapport PDF",
+    scores: {
+      biblicalFidelity: "Fidélité Biblique",
+      structure: "Structure",
+      practicalApplication: "Application Pratique",
+      authenticity: "Authenticité",
+      interactivity: "Interactivité"
+    }
   },
   about: {
     title: "À propos de TheoCheck",
@@ -76,6 +84,17 @@ const fr = {
       tagline: "Affinez votre prédication. Renforcez votre impact."
     }
   },
+  contact: {
+    title: "Contactez-nous",
+    description: "Notre équipe est là pour vous aider. N'hésitez pas à nous contacter pour toute question.",
+    form: {
+      name: "Nom",
+      email: "Email",
+      message: "Message",
+      subject: "Sujet",
+      submit: "Envoyer"
+    }
+  },
   settings: {
     notifications: {
       email: "Notifications par email",
@@ -86,6 +105,11 @@ const fr = {
         disable: "Désactiver"
       }
     }
+  },
+  errors: {
+    error: "Erreur",
+    loginRequired: "Veuillez vous connecter pour télécharger le rapport",
+    pdfDownloadFailed: "Erreur lors du téléchargement du rapport"
   }
 };
 
@@ -142,6 +166,7 @@ const en = {
     }
   },
   analysis: {
+    results: "Analysis Results",
     overallScore: "Overall Score",
     strengths: "Strengths",
     improvements: "Areas for Improvement",
@@ -149,7 +174,14 @@ const en = {
     keyScriptures: "Key Scripture References",
     applicationPoints: "Application Points",
     theologicalTradition: "Theological Tradition",
-    downloadPdf: "Download PDF Report"
+    downloadPdf: "Download PDF Report",
+    scores: {
+      biblicalFidelity: "Biblical Fidelity",
+      structure: "Structure",
+      practicalApplication: "Practical Application",
+      authenticity: "Authenticity",
+      interactivity: "Interactivity"
+    }
   },
   about: {
     title: "About TheoCheck",
@@ -163,6 +195,17 @@ const en = {
       tagline: "Refine your preaching. Strengthen your impact."
     }
   },
+  contact: {
+    title: "Contact Us",
+    description: "Our team is here to help. Feel free to reach out with any questions.",
+    form: {
+      name: "Name",
+      email: "Email",
+      message: "Message",
+      subject: "Subject",
+      submit: "Send"
+    }
+  },
   settings: {
     notifications: {
       email: "Email notifications",
@@ -173,6 +216,11 @@ const en = {
         disable: "Disable"
       }
     }
+  },
+  errors: {
+    error: "Error",
+    loginRequired: "Please login to download the report",
+    pdfDownloadFailed: "Failed to download the report"
   }
 };
 

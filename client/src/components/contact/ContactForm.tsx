@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -20,6 +21,8 @@ type ContactForm = z.infer<typeof contactSchema>;
 
 export function ContactForm() {
   const { toast } = useToast();
+  const { t } = useTranslation();
+
   const form = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
   });
@@ -46,7 +49,7 @@ export function ContactForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t("contact.form.name")}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -59,7 +62,7 @@ export function ContactForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t("contact.form.email")}</FormLabel>
               <FormControl>
                 <Input {...field} type="email" />
               </FormControl>
@@ -72,7 +75,7 @@ export function ContactForm() {
           name="subject"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Subject</FormLabel>
+              <FormLabel>{t("contact.form.subject")}</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -85,7 +88,7 @@ export function ContactForm() {
           name="message"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Message</FormLabel>
+              <FormLabel>{t("contact.form.message")}</FormLabel>
               <FormControl>
                 <Textarea {...field} />
               </FormControl>
@@ -94,7 +97,7 @@ export function ContactForm() {
           )}
         />
         <Button type="submit" disabled={mutation.isPending}>
-          Send Message
+          {t("contact.form.submit")}
         </Button>
       </form>
     </Form>
