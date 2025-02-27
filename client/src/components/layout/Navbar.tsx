@@ -18,21 +18,22 @@ import {
 import { Settings, Languages, Bell } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 export function Navbar() {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [language, setLanguage] = useState("fr");
+  const { t, i18n } = useTranslation();
   const [notifications, setNotifications] = useState({
     email: true,
     analysis: true,
   });
 
   const handleLanguageChange = (value: string) => {
-    setLanguage(value);
+    i18n.changeLanguage(value);
     toast({
-      title: "Langue modifiée",
-      description: "Le changement sera effectif au prochain rechargement",
+      title: t("common.languageChanged"),
+      description: t("common.languageChangeEffect"),
     });
   };
 
@@ -42,8 +43,9 @@ export function Navbar() {
       [type]: !prev[type],
     }));
     toast({
-      title: "Préférences de notification mises à jour",
-      description: `Les notifications ${type === "email" ? "par email" : "d'analyse"} ont été ${notifications[type] ? "désactivées" : "activées"}`,
+      title: t("settings.notifications.updated"),
+      description: t(`settings.notifications.${type}`) + " " +
+        (notifications[type] ? t("settings.notifications.toggle.disable") : t("settings.notifications.toggle.enable")),
     });
   };
 
@@ -55,16 +57,13 @@ export function Navbar() {
         </Link>
         <div className="ml-auto flex items-center space-x-4">
           <Link href="/analyze">
-            <a className="text-sm font-medium">Analyser</a>
-          </Link>
-          <Link href="/history">
-            <a className="text-sm font-medium">Historique</a>
+            <a className="text-sm font-medium">{t("common.analyze")}</a>
           </Link>
           <Link href="/about">
-            <a className="text-sm font-medium">À propos</a>
+            <a className="text-sm font-medium">{t("common.about")}</a>
           </Link>
           <Link href="/contact">
-            <a className="text-sm font-medium">Contact</a>
+            <a className="text-sm font-medium">{t("common.contact")}</a>
           </Link>
           {user ? (
             <>
@@ -75,20 +74,20 @@ export function Navbar() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Paramètres</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t("common.settings")}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <Link href="/settings">
                     <DropdownMenuItem>
-                      Préférences utilisateur
+                      {t("common.userPreferences")}
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
                       <Languages className="mr-2 h-4 w-4" />
-                      <span>Langue et région</span>
+                      <span>{t("common.language")}</span>
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
-                      <DropdownMenuRadioGroup value={language} onValueChange={handleLanguageChange}>
+                      <DropdownMenuRadioGroup value={i18n.language} onValueChange={handleLanguageChange}>
                         <DropdownMenuRadioItem value="fr">Français</DropdownMenuRadioItem>
                         <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
                       </DropdownMenuRadioGroup>
@@ -97,14 +96,14 @@ export function Navbar() {
                   <DropdownMenuSub>
                     <DropdownMenuSubTrigger>
                       <Bell className="mr-2 h-4 w-4" />
-                      <span>Notifications</span>
+                      <span>{t("common.notifications")}</span>
                     </DropdownMenuSubTrigger>
                     <DropdownMenuSubContent>
                       <DropdownMenuItem onClick={() => toggleNotification("email")}>
-                        {notifications.email ? "Désactiver" : "Activer"} les notifications par email
+                        {notifications.email ? t("settings.notifications.toggle.disable") : t("settings.notifications.toggle.enable")} {t("settings.notifications.email")}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => toggleNotification("analysis")}>
-                        {notifications.analysis ? "Désactiver" : "Activer"} les notifications d'analyse
+                        {notifications.analysis ? t("settings.notifications.toggle.disable") : t("settings.notifications.toggle.enable")} {t("settings.notifications.analysis")}
                       </DropdownMenuItem>
                     </DropdownMenuSubContent>
                   </DropdownMenuSub>
@@ -114,12 +113,12 @@ export function Navbar() {
                 variant="ghost"
                 onClick={() => auth.signOut()}
               >
-                Déconnexion
+                {t("common.logout")}
               </Button>
             </>
           ) : (
             <Link href="/login">
-              <Button>Connexion</Button>
+              <Button>{t("common.login")}</Button>
             </Link>
           )}
         </div>
