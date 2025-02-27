@@ -337,7 +337,6 @@ export async function registerRoutes(app: Express) {
   app.get("/api/sermons/:id/pdf", authenticateUser, async (req, res) => {
     try {
       const sermonId = parseInt(req.params.id);
-      const language = req.query.language || 'fr'; // Default to French if not specified
       const sermon = await storage.getSermon(sermonId);
 
       if (!sermon) {
@@ -366,7 +365,7 @@ export async function registerRoutes(app: Express) {
 
       doc.fontSize(16)
         .fillColor('#4a5568')
-        .text(language === 'fr' ? 'Rapport d\'Analyse de Sermon' : 'Sermon Analysis Report', { align: 'center' });
+        .text('Rapport d\'Analyse de Sermon', { align: 'center' });
 
       doc.moveDown(2);
 
@@ -377,9 +376,7 @@ export async function registerRoutes(app: Express) {
 
       doc.fontSize(12)
         .fillColor('#718096')
-        .text(language === 'fr' 
-          ? `Date d'analyse: ${new Date().toLocaleDateString('fr-FR')}`
-          : `Analysis date: ${new Date().toLocaleDateString('en-US')}`)
+        .text(`Date d'analyse: ${new Date().toLocaleDateString('fr-FR')}`)
         .moveDown();
 
       // Divider
@@ -393,7 +390,7 @@ export async function registerRoutes(app: Express) {
         doc.moveDown()
           .fontSize(16)
           .fillColor('#2d3748')
-          .text(language === 'fr' ? 'Note Globale' : 'Overall Score', { continued: true })
+          .text('Note Globale', { continued: true })
           .fillColor('#48bb78')
           .text(`: ${analysis.overallScore}/10`, { align: 'right' })
           .moveDown();
@@ -401,21 +398,15 @@ export async function registerRoutes(app: Express) {
         // Scores section with visual presentation
         doc.fontSize(14)
           .fillColor('#2d3748')
-          .text(language === 'fr' ? 'Évaluation Détaillée' : 'Detailed Evaluation')
+          .text('Évaluation Détaillée')
           .moveDown(0.5);
 
-        const scores = language === 'fr' ? [
+        const scores = [
           { label: 'Fidélité Biblique', score: analysis.scores.fideliteBiblique },
           { label: 'Structure', score: analysis.scores.structure },
           { label: 'Application Pratique', score: analysis.scores.applicationPratique },
           { label: 'Authenticité', score: analysis.scores.authenticite },
           { label: 'Interactivité', score: analysis.scores.interactivite }
-        ] : [
-          { label: 'Biblical Fidelity', score: analysis.scores.biblicalFidelity },
-          { label: 'Structure', score: analysis.scores.structure },
-          { label: 'Practical Application', score: analysis.scores.practicalApplication },
-          { label: 'Authenticity', score: analysis.scores.authenticity },
-          { label: 'Interactivity', score: analysis.scores.interactivity }
         ];
 
         scores.forEach(({ label, score }) => {
@@ -434,7 +425,7 @@ export async function registerRoutes(app: Express) {
         doc.moveDown()
           .fontSize(16)
           .fillColor('#2d3748')
-          .text(language === 'fr' ? 'Points Clés' : 'Key Points')
+          .text('Points Clés')
           .moveDown(0.5);
 
         doc.fontSize(12)
@@ -445,7 +436,7 @@ export async function registerRoutes(app: Express) {
         // Strengths section with visual bullets
         doc.fontSize(14)
           .fillColor('#2d3748')
-          .text(language === 'fr' ? 'Points Forts' : 'Strengths')
+          .text('Points Forts')
           .moveDown(0.5);
 
         analysis.strengths.forEach(strength => {
@@ -461,7 +452,7 @@ export async function registerRoutes(app: Express) {
         doc.moveDown()
           .fontSize(14)
           .fillColor('#2d3748')
-          .text(language === 'fr' ? 'Recommandations d\'Amélioration' : 'Areas for Improvement')
+          .text('Recommandations d\'Amélioration')
           .moveDown(0.5);
 
         analysis.improvements.forEach(improvement => {
@@ -477,7 +468,7 @@ export async function registerRoutes(app: Express) {
         doc.moveDown()
           .fontSize(14)
           .fillColor('#2d3748')
-          .text(language === 'fr' ? 'Références Bibliques' : 'Biblical References')
+          .text('Références Bibliques')
           .moveDown(0.5);
 
         analysis.keyScriptures.forEach(scripture => {
@@ -491,7 +482,7 @@ export async function registerRoutes(app: Express) {
         doc.moveDown()
           .fontSize(14)
           .fillColor('#2d3748')
-          .text(language === 'fr' ? 'Applications Pratiques' : 'Practical Applications')
+          .text('Applications Pratiques')
           .moveDown(0.5);
 
         analysis.applicationPoints.forEach(point => {
@@ -505,31 +496,25 @@ export async function registerRoutes(app: Express) {
         doc.moveDown()
           .fontSize(14)
           .fillColor('#2d3748')
-          .text(language === 'fr' ? 'Analyse Théologique' : 'Theological Analysis')
+          .text('Analyse Théologique')
           .moveDown(0.5);
 
         doc.fontSize(12)
           .fillColor('#4a5568')
-          .text(language === 'fr' 
-            ? `Tradition Théologique: ${analysis.theologicalTradition}`
-            : `Theological Tradition: ${analysis.theologicalTradition}`)
+          .text(`Tradition Théologique: ${analysis.theologicalTradition}`)
           .moveDown();
 
         // Audience Engagement Analysis
         doc.moveDown()
           .fontSize(14)
           .fillColor('#2d3748')
-          .text(language === 'fr' ? 'Analyse de l\'Engagement' : 'Engagement Analysis')
+          .text('Analyse de l\'Engagement')
           .moveDown(0.5);
 
-        const engagementScores = language === 'fr' ? [
+        const engagementScores = [
           { label: 'Connection Émotionnelle', score: analysis.audienceEngagement.emotional },
           { label: 'Compréhension Théologique', score: analysis.audienceEngagement.intellectual },
           { label: 'Application Quotidienne', score: analysis.audienceEngagement.practical }
-        ] : [
-          { label: 'Emotional Connection', score: analysis.audienceEngagement.emotional },
-          { label: 'Theological Understanding', score: analysis.audienceEngagement.intellectual },
-          { label: 'Daily Application', score: analysis.audienceEngagement.practical }
         ];
 
         engagementScores.forEach(({ label, score }) => {
@@ -543,28 +528,19 @@ export async function registerRoutes(app: Express) {
         doc.moveDown()
           .fontSize(14)
           .fillColor('#2d3748')
-          .text(language === 'fr' 
-            ? 'Recommandations pour le Prochain Sermon'
-            : 'Recommendations for Next Sermon')
+          .text('Recommandations pour le Prochain Sermon')
           .moveDown(0.5);
 
         doc.fontSize(12)
           .fillColor('#4a5568')
-          .text(language === 'fr'
-            ? 'Pour améliorer votre prochain sermon, concentrez-vous sur:'
-            : 'To improve your next sermon, focus on:')
+          .text('Pour améliorer votre prochain sermon, concentrez-vous sur:')
           .moveDown(0.3);
 
-        const recommendations = language === 'fr' ? [
+        const recommendations = [
           'Maintenez vos points forts actuels tout en travaillant sur les aspects à améliorer',
           'Utilisez plus d\'illustrations pour renforcer vos points principaux',
           'Structurez votre message avec des transitions plus claires',
           'Incluez des moments de réflexion pour l\'engagement de l\'auditoire'
-        ] : [
-          'Maintain your current strengths while working on areas for improvement',
-          'Use more illustrations to reinforce your main points',
-          'Structure your message with clearer transitions',
-          'Include moments of reflection for audience engagement'
         ];
 
         recommendations.forEach(rec => {
@@ -574,23 +550,16 @@ export async function registerRoutes(app: Express) {
         // Footer
         doc.fontSize(10)
           .fillColor('#718096')
-          .text(language === 'fr'
-            ? 'TheoCheck - Analyse IA de Sermons'
-            : 'TheoCheck - AI Sermon Analysis', 
-            50, doc.page.height - 50, {
-              align: 'center'
-            });
+          .text('TheoCheck - Analyse IA de Sermons', 50, doc.page.height - 50, {
+            align: 'center'
+          });
       }
 
       // Finalize PDF
       doc.end();
     } catch (error) {
       console.error("Error generating PDF:", error);
-      res.status(500).json({ 
-        message: language === 'fr' 
-          ? "Erreur lors de la génération du rapport PDF"
-          : "Error generating PDF report"
-      });
+      res.status(500).json({ message: "Erreur lors de la génération du rapport PDF" });
     }
   });
 

@@ -26,7 +26,7 @@ interface SermonAnalysisProps {
 
 export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) {
   const { toast } = useToast();
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   // Debug logging
   console.log("Analysis scores:", analysis.scores);
@@ -50,7 +50,7 @@ export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) 
         throw new Error(t("errors.loginRequired"));
       }
 
-      const response = await fetch(`/api/sermons/${sermonId}/pdf?language=${i18n.language}`, {
+      const response = await fetch(`/api/sermons/${sermonId}/pdf`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
