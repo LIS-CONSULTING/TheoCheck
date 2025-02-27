@@ -5,6 +5,10 @@ import { insertSermonSchema, type SermonAnalysis } from "@shared/schema";
 import OpenAI from "openai";
 import admin from "firebase-admin";
 
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error("OPENAI_API_KEY is required");
+}
+
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Add custom properties to Express.Request
@@ -73,8 +77,19 @@ export async function registerRoutes(app: Express) {
       res.json(updatedSermon);
     } catch (error: any) {
       console.error("Analysis error:", error);
-      res.status(500).json({ 
-        message: "Failed to analyze sermon",
+      let message = "Failed to analyze sermon";
+      let status = 500;
+
+      if (error.status === 429) {
+        message = "Analysis service is temporarily unavailable. Please try again in a few minutes.";
+        status = 429;
+      } else if (error.status === 401) {
+        message = "API authentication error. Please contact support.";
+        status = 401;
+      }
+
+      res.status(status).json({ 
+        message,
         details: error.message || "Unknown error"
       });
     }
@@ -136,8 +151,19 @@ export async function registerRoutes(app: Express) {
       res.json(updatedSermon);
     } catch (error: any) {
       console.error("Error in /api/sermons:", error);
-      res.status(500).json({ 
-        message: "Failed to analyze sermon",
+      let message = "Failed to analyze sermon";
+      let status = 500;
+
+      if (error.status === 429) {
+        message = "Analysis service is temporarily unavailable. Please try again in a few minutes.";
+        status = 429;
+      } else if (error.status === 401) {
+        message = "API authentication error. Please contact support.";
+        status = 401;
+      }
+
+      res.status(status).json({ 
+        message,
         details: error.message || "Unknown error"
       });
     }
