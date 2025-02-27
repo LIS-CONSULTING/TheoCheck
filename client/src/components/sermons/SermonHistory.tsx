@@ -15,15 +15,51 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import { FileText, Calendar, BookOpen } from "lucide-react";
-import { SermonAnalysisView } from "./SermonAnalysis";
+import { useEffect, useState } from "react";
+import { collection, query, where, onSnapshot, orderBy } from "firebase/firestore";
+import { db, auth } from "@/lib/firebase";
+import { useToast } from "@/hooks/use-toast";
 
 export function SermonHistory() {
   const [, setLocation] = useLocation();
-  const { data: sermons, isLoading } = useQuery<Sermon[]>({
-    queryKey: ["/api/sermons"],
-  });
+  const { toast } = useToast();
+  const [sermons, setSermons] = useState<Sermon[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!auth.currentUser) return;
+
+    const sermonsQuery = query(
+      collection(db, "sermons"),
+      where("userId", "==", auth.currentUser.uid),
+      orderBy("createdAt", "desc")
+    );
+
+    const unsubscribe = onSnapshot(
+      sermonsQuery,
+      (snapshot) => {
+        const sermonsData = snapshot.docs.map((doc) => ({
+          id: parseInt(doc.id),
+          ...doc.data()
+        })) as Sermon[];
+        setSermons(sermonsData);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching sermons:", error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de charger l'historique des sermons",
+          variant: "destructive",
+        });
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [toast]);
+
+  if (loading) {
     return (
       <div className="space-y-6">
         {[...Array(3)].map((_, i) => (
@@ -85,11 +121,6 @@ export function SermonHistory() {
             <div className="prose prose-sm max-w-none text-muted-foreground">
               <p>{sermon.content.slice(0, 200)}...</p>
             </div>
-            {sermon.analysis && (
-              <div className="mt-6">
-                <SermonAnalysisView analysis={sermon.analysis} />
-              </div>
-            )}
           </CardContent>
           <CardFooter className="bg-muted/5 flex items-center justify-end gap-2 border-t p-4">
             <Button 
@@ -100,17 +131,6 @@ export function SermonHistory() {
               <FileText className="mr-2 h-4 w-4" />
               Voir l'analyse complète
             </Button>
-            {sermon.analysis && (
-              <Button 
-                size="sm"
-                onClick={() => {
-                  // Generate PDF report (to be implemented)
-                  console.log("Generating PDF for sermon:", sermon.id);
-                }}
-              >
-                Télécharger le rapport
-              </Button>
-            )}
           </CardFooter>
         </Card>
       ))}
