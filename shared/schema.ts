@@ -22,6 +22,13 @@ export const sermons = pgTable("sermons", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export type EngagementPoint = {
+  position: number; // Position in the sermon (0-100%)
+  intensity: number; // Engagement intensity (0-1)
+  type: "emotional" | "theological" | "practical"; // Type of engagement
+  note?: string; // Optional note about this engagement point
+};
+
 export type SermonAnalysis = {
   scores: {
     fideliteBiblique: number;
@@ -44,6 +51,7 @@ export type SermonAnalysis = {
     intellectual: number;
     practical: number;
   };
+  engagementData: EngagementPoint[]; // Array of engagement points throughout the sermon
 };
 
 export type UserPreferences = {

@@ -2,6 +2,7 @@ import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { type Sermon } from "@shared/schema";
 import { SermonAnalysisView } from "@/components/sermons/SermonAnalysis";
+import { SermonHeatMap } from "@/components/sermons/SermonHeatMap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -45,6 +46,9 @@ export default function Analysis() {
     );
   }
 
+  // Calculate sermon length in words for the heat map
+  const sermonLength = sermon.content.split(/\s+/).length;
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="mb-8 text-3xl font-bold">Analyse du Sermon</h1>
@@ -58,7 +62,13 @@ export default function Analysis() {
           </div>
         </CardContent>
       </Card>
-      <SermonAnalysisView analysis={sermon.analysis} sermonId={sermon.id} />
+      <div className="space-y-6">
+        <SermonAnalysisView analysis={sermon.analysis} sermonId={sermon.id} />
+        <SermonHeatMap 
+          engagementData={sermon.analysis.engagementData}
+          sermonLength={sermonLength}
+        />
+      </div>
     </div>
   );
 }

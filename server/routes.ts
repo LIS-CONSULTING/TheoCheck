@@ -37,7 +37,15 @@ Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
     "emotional": number (1-10, connexion émotionnelle),
     "intellectual": number (1-10, compréhension théologique),
     "practical": number (1-10, applicabilité quotidienne)
-  }
+  },
+  "engagementData": [
+    {
+      "position": number (position dans le sermon en pourcentage, 0-100),
+      "intensity": number (intensité de l'engagement, 0-1),
+      "type": string ("emotional" | "theological" | "practical"),
+      "note": string (commentaire optionnel sur ce point d'engagement)
+    }
+  ]
 }
 
 Critères d'évaluation détaillés:
@@ -66,6 +74,12 @@ Critères d'évaluation détaillés:
 - Le sermon encourage-t-il la participation active ?
 - Le message est-il adapté au contexte culturel et spirituel ?
 - Le temps est-il bien géré pour maintenir l'attention ?
+
+Pour l'analyse de l'engagement:
+- Identifie les moments clés du sermon où l'engagement change significativement
+- Évalue l'intensité de l'engagement pour chaque point identifié
+- Catégorise chaque point comme émotionnel, théologique ou pratique
+- Ajoute des notes explicatives pour les moments particulièrement marquants
 
 Ton et approche:
 - Sois professionnel, strict et rigoureux
