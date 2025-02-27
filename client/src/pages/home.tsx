@@ -1,27 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useTranslation } from "react-i18next";
 
 export default function Home() {
+  const { t } = useTranslation();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-24">
       <div className="text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-          Analysez vos sermons avec l'IA
+          {t("home.title")}
         </h1>
         <p className="mt-6 text-xl leading-8 text-muted-foreground">
-          Soumettez votre sermon et recevez une analyse détaillée, des retours
-          personnalisés, et des suggestions concrètes pour améliorer votre
-          prédication.
+          {t("home.subtitle")}
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
           <Link href="/analyze">
             <Button size="lg" className="text-xl px-10 py-7 transform hover:scale-105 transition-transform">
-              Analyser un sermon
+              {t("common.analyze")}
             </Button>
           </Link>
           <Link href="/about">
             <Button variant="outline" size="lg" className="text-xl px-10 py-7 transform hover:scale-105 transition-transform">
-              En savoir plus
+              {t("common.learnMore")}
             </Button>
           </Link>
         </div>
@@ -29,69 +30,39 @@ export default function Home() {
 
       <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="p-6 rounded-lg bg-card hover:bg-muted/50 transition-colors">
-          <h3 className="text-xl font-bold mb-3 text-primary">Analyse complète</h3>
-          <p className="text-base mb-4">Évaluation détaillée de votre sermon selon plusieurs critères</p>
+          <h3 className="text-xl font-bold mb-3 text-primary">{t("home.features.analysis.title")}</h3>
+          <p className="text-base mb-4">{t("home.features.analysis.description")}</p>
           <ul className="space-y-2 text-muted-foreground">
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Structure et cohérence
-            </li>
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Clarté théologique
-            </li>
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Pertinence et application
-            </li>
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Engagement et style
-            </li>
+            {t("home.features.analysis.items", { returnObjects: true }).map((item, index) => (
+              <li key={index}>
+                <span className="inline-block text-primary mr-2">●</span>
+                {item}
+              </li>
+            ))}
           </ul>
         </div>
         <div className="p-6 rounded-lg bg-card hover:bg-muted/50 transition-colors">
-          <h3 className="text-xl font-bold mb-3 text-primary">Visualisation interactive</h3>
-          <p className="text-base mb-4">Graphiques et statistiques pour mieux comprendre vos forces et faiblesses</p>
+          <h3 className="text-xl font-bold mb-3 text-primary">{t("home.features.visualization.title")}</h3>
+          <p className="text-base mb-4">{t("home.features.visualization.description")}</p>
           <ul className="space-y-2 text-muted-foreground">
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Graphique radar des compétences
-            </li>
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Histogramme des points forts
-            </li>
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Analyse comparative
-            </li>
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Suivi des progrès
-            </li>
+            {t("home.features.visualization.items", { returnObjects: true }).map((item, index) => (
+              <li key={index}>
+                <span className="inline-block text-primary mr-2">●</span>
+                {item}
+              </li>
+            ))}
           </ul>
         </div>
         <div className="p-6 rounded-lg bg-card hover:bg-muted/50 transition-colors">
-          <h3 className="text-xl font-bold mb-3 text-primary">Rapport détaillé</h3>
-          <p className="text-base mb-4">Téléchargez un rapport complet pour approfondir votre analyse</p>
+          <h3 className="text-xl font-bold mb-3 text-primary">{t("home.features.report.title")}</h3>
+          <p className="text-base mb-4">{t("home.features.report.description")}</p>
           <ul className="space-y-2 text-muted-foreground">
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Rapport PDF téléchargeable
-            </li>
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Conseils personnalisés
-            </li>
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Suggestions d'amélioration
-            </li>
-            <li>
-              <span className="inline-block text-primary mr-2">●</span>
-              Ressources recommandées
-            </li>
+            {t("home.features.report.items", { returnObjects: true }).map((item, index) => (
+              <li key={index}>
+                <span className="inline-block text-primary mr-2">●</span>
+                {item}
+              </li>
+            ))}
           </ul>
         </div>
       </div>
