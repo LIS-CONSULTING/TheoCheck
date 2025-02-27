@@ -12,6 +12,7 @@ import About from "@/pages/about";
 import Privacy from "@/pages/privacy";
 import { LoginPage } from "@/components/auth/LoginPage";
 import Analysis from "@/pages/analysis";
+import Settings from "@/pages/settings";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/privacy" component={Privacy} />
       <Route path="/login" component={LoginPage} />
+      <Route path="/settings" component={Settings} />
       <Route component={NotFound} />
     </Switch>
   );

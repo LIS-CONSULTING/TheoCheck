@@ -2,6 +2,15 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { auth } from "@/lib/firebase";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Settings } from "lucide-react";
 
 export function Navbar() {
   const { user } = useAuth();
@@ -29,12 +38,36 @@ export function Navbar() {
             <a className="text-sm font-medium">Contact</a>
           </Link>
           {user ? (
-            <Button
-              variant="ghost"
-              onClick={() => auth.signOut()}
-            >
-              Déconnexion
-            </Button>
+            <>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Settings className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuLabel>Paramètres</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <Link href="/settings">
+                    <DropdownMenuItem>
+                      Préférences utilisateur
+                    </DropdownMenuItem>
+                  </Link>
+                  <DropdownMenuItem>
+                    Langue et région
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    Notifications
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button
+                variant="ghost"
+                onClick={() => auth.signOut()}
+              >
+                Déconnexion
+              </Button>
+            </>
           ) : (
             <Link href="/login">
               <Button>Connexion</Button>
