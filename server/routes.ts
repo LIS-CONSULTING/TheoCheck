@@ -21,24 +21,39 @@ export async function registerRoutes(app: Express) {
   // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
   app.post("/api/analyze", async (req, res) => {
     try {
+      const sermonId = req.body.sermonId;
+      const sermon = await storage.getSermon(sermonId);
+
+      if (!sermon) {
+        return res.status(404).json({ message: "Sermon not found" });
+      }
+
+      if (sermon.userId !== req.user?.id) {
+        return res.status(403).json({ message: "Unauthorized" });
+      }
+
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
         messages: [
           {
             role: "system",
-            content: "You are a sermon analysis expert. Analyze the sermon and provide detailed feedback."
+            content: "You are a sermon analysis expert. Analyze the sermon and provide detailed feedback in JSON format with scores from 1-10 for structure, theology, relevance, and engagement, along with strengths, improvements, and a summary."
           },
           {
             role: "user",
-            content: req.body.content
+            content: sermon.content
           }
         ],
         response_format: { type: "json_object" }
       });
 
       const analysis = JSON.parse(response.choices[0].message.content || "{}") as SermonAnalysis;
-      res.json(analysis);
-    } catch (error) {
+
+      // Store the analysis results
+      const updatedSermon = await storage.updateSermonAnalysis(sermonId, analysis);
+      res.json(updatedSermon);
+    } catch (error: any) {
+      console.error("Analysis error:", error);
       res.status(500).json({ message: "Failed to analyze sermon" });
     }
   });
@@ -68,9 +83,33 @@ export async function registerRoutes(app: Express) {
       ...parsed.data,
       userId,
       analysis: null,
+      bibleReference: parsed.data.bibleReference || null,
     });
 
-    res.json(sermon);
+    // After creating the sermon, trigger analysis
+    try {
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: "You are a sermon analysis expert. Analyze the sermon and provide detailed feedback in JSON format with scores from 1-10 for structure, theology, relevance, and engagement, along with strengths, improvements, and a summary."
+          },
+          {
+            role: "user",
+            content: sermon.content
+          }
+        ],
+        response_format: { type: "json_object" }
+      });
+
+      const analysis = JSON.parse(response.choices[0].message.content || "{}") as SermonAnalysis;
+      const updatedSermon = await storage.updateSermonAnalysis(sermon.id, analysis);
+      res.json(updatedSermon);
+    } catch (error) {
+      // If analysis fails, return the sermon without analysis
+      res.json(sermon);
+    }
   });
 
   app.post("/api/contact", async (req, res) => {

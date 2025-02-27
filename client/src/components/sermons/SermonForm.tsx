@@ -8,9 +8,13 @@ import { Button } from "@/components/ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
+import { Loader2 } from "lucide-react";
 
 export function SermonForm() {
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
+
   const form = useForm<InsertSermon>({
     resolver: zodResolver(insertSermonSchema),
     defaultValues: {
@@ -25,12 +29,16 @@ export function SermonForm() {
       const res = await apiRequest("POST", "/api/sermons", data);
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "Success",
-        description: "Your sermon has been submitted for analysis",
+        description: data.analysis 
+          ? "Your sermon has been analyzed successfully"
+          : "Your sermon has been submitted but analysis is still processing",
       });
       form.reset();
+      // Redirect to the analysis view
+      setLocation(`/history`);
     },
     onError: (error) => {
       toast({
@@ -84,7 +92,14 @@ export function SermonForm() {
           )}
         />
         <Button type="submit" disabled={mutation.isPending}>
-          {mutation.isPending ? "Analyzing..." : "Analyze Sermon"}
+          {mutation.isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Analyzing...
+            </>
+          ) : (
+            "Analyze Sermon"
+          )}
         </Button>
       </form>
     </Form>
