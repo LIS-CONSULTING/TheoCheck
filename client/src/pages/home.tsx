@@ -6,7 +6,7 @@ export default function Home() {
     <div className="mx-auto max-w-7xl px-4 py-24">
       <div className="text-center">
         <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
-          Améliorez vos sermons avec l'IA
+          Analysez vos sermons avec l'IA
         </h1>
         <p className="mt-6 text-xl leading-8 text-muted-foreground">
           Soumettez votre sermon et recevez une analyse détaillée, des retours

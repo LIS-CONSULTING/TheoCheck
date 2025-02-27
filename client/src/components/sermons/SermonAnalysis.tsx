@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { auth } from "@/lib/firebase";
 import {
   Radar,
   RadarChart,
@@ -18,9 +20,12 @@ import {
 
 interface SermonAnalysisProps {
   analysis: SermonAnalysis;
+  sermonId: number;
 }
 
-export function SermonAnalysisView({ analysis }: SermonAnalysisProps) {
+export function SermonAnalysisView({ analysis, sermonId }: SermonAnalysisProps) {
+  const { toast } = useToast();
+
   const chartData = [
     { subject: "Fidélité Biblique", score: analysis.scores.fideliteBiblique },
     { subject: "Structure", score: analysis.scores.structure },
@@ -31,10 +36,15 @@ export function SermonAnalysisView({ analysis }: SermonAnalysisProps) {
 
   const handleDownloadPDF = async () => {
     try {
-      const response = await fetch(`/api/sermons/${analysis.id}/pdf`, {
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) {
+        throw new Error('Veuillez vous connecter pour télécharger le rapport');
+      }
+
+      const response = await fetch(`/api/sermons/${sermonId}/pdf`, {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
 
@@ -44,13 +54,18 @@ export function SermonAnalysisView({ analysis }: SermonAnalysisProps) {
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `analyse-sermon-${analysis.id}.pdf`;
+      a.download = `analyse-sermon-${sermonId}.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
       console.error('Erreur de téléchargement:', error);
+      toast({
+        title: "Erreur",
+        description: error instanceof Error ? error.message : "Erreur lors du téléchargement du rapport",
+        variant: "destructive",
+      });
     }
   };
 

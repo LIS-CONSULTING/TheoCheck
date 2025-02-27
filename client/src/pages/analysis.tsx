@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Analysis() {
   const [location] = useLocation();
-  const sermonId = location.split("/")[2]; // Get sermon ID from URL
+  const sermonId = parseInt(location.split("/")[2]); // Get sermon ID from URL
 
   const { data: sermon, isLoading } = useQuery<Sermon>({
     queryKey: [`/api/sermons/${sermonId}`],
@@ -58,7 +58,7 @@ export default function Analysis() {
           </div>
         </CardContent>
       </Card>
-      <SermonAnalysisView analysis={sermon.analysis} />
+      <SermonAnalysisView analysis={sermon.analysis} sermonId={sermon.id} />
     </div>
   );
 }
