@@ -1,15 +1,11 @@
-import type { Express } from "express";
+import type { Express, Request } from "express";
 import { createServer } from "http";
 import { storage } from "./storage";
-import { insertSermonSchema } from "@shared/schema";
-import { initializeFirebase, verifyAuth, saveContactForm } from "./lib/firebase";
+import { insertSermonSchema, type SermonAnalysis } from "@shared/schema";
 import OpenAI from "openai";
 import admin from "firebase-admin";
 import PDFDocument from "pdfkit";
 import { getFirestore } from "firebase-admin/firestore";
-
-// Initialize Firebase
-const db = initializeFirebase();
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is required");
@@ -84,7 +80,7 @@ declare global {
 }
 
 // Firebase auth middleware
-const authenticateUser = async (req: any, res: any, next: any) => {
+const authenticateUser = async (req: Request, res: any, next: any) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith('Bearer ')) {
@@ -92,7 +88,7 @@ const authenticateUser = async (req: any, res: any, next: any) => {
     }
 
     const token = authHeader.split('Bearer ')[1];
-    const decodedToken = await verifyAuth(token);
+    const decodedToken = await admin.auth().verifyIdToken(token);
     req.user = { id: decodedToken.uid };
     next();
   } catch (error) {
@@ -102,27 +98,6 @@ const authenticateUser = async (req: any, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express) {
-  // Contact form endpoint
-  app.post("/api/contact", async (req, res) => {
-    try {
-      const { name, email, subject, message } = req.body;
-      const docId = await saveContactForm({ name, email, subject, message });
-
-      res.json({
-        success: true,
-        message: "Message received successfully",
-        id: docId
-      });
-    } catch (error: any) {
-      console.error("Error saving contact form:", error);
-      res.status(500).json({
-        success: false,
-        message: "Failed to save contact form",
-        error: error.message
-      });
-    }
-  });
-
   app.get("/api/sermons/:id", authenticateUser, async (req, res) => {
     try {
       const sermonId = parseInt(req.params.id);
@@ -320,6 +295,44 @@ export async function registerRoutes(app: Express) {
     }
   });
 
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const { name, email, subject, message } = req.body;
+
+      // Get Firestore instance
+      const db = getFirestore();
+
+      // Add timestamp to the contact submission
+      const contactData = {
+        name,
+        email,
+        subject,
+        message,
+        createdAt: new Date(),
+        status: 'new' // For tracking purposes
+      };
+
+      console.log("Attempting to save contact form data:", contactData);
+
+      // Add to 'contacts' collection
+      const docRef = await db.collection('contacts').add(contactData);
+
+      console.log("Contact form saved successfully with ID:", docRef.id);
+
+      res.json({
+        success: true,
+        message: "Message received successfully",
+        id: docRef.id // Return the document ID for reference
+      });
+    } catch (error) {
+      console.error("Error saving contact form:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to save contact form",
+        error: error.message
+      });
+    }
+  });
 
   app.get("/api/sermons/:id/pdf", authenticateUser, async (req, res) => {
     try {
@@ -559,33 +572,6 @@ interface UserPreferences {
   theologicalTradition: string;
   preferredStyle: string;
   lastViewedSermons: number[];
-}
-
-interface SermonAnalysis {
-  scores: {
-    fideliteBiblique: number;
-    structure: number;
-    applicationPratique: number;
-    authenticite: number;
-    interactivite: number;
-    biblicalFidelity?: number;
-    practicalApplication?: number;
-    authenticity?: number;
-  };
-  overallScore: number;
-  strengths: string[];
-  improvements: string[];
-  summary: string;
-  topics: string[];
-  theologicalTradition: string;
-  keyScriptures: string[];
-  applicationPoints: string[];
-  illustrationsUsed: string[];
-  audienceEngagement: {
-    emotional: number;
-    intellectual: number;
-    practical: number;
-  };
 }
 
 interface Sermon {
