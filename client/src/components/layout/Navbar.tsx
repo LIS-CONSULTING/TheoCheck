@@ -10,7 +10,7 @@ export function Navbar() {
     <nav className="border-b bg-background">
       <div className="mx-auto flex h-16 max-w-7xl items-center px-4">
         <Link href="/">
-          <a className="text-xl font-bold">Sermon GPT</a>
+          <a className="text-xl font-bold">TheoCheck</a>
         </Link>
         <div className="ml-auto flex items-center space-x-4">
           <Link href="/analyze">

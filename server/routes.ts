@@ -37,7 +37,6 @@ const authenticateUser = async (req: Request, res: any, next: any) => {
 };
 
 export async function registerRoutes(app: Express) {
-  // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
   app.post("/api/analyze", authenticateUser, async (req, res) => {
     try {
       const sermonId = req.body.sermonId;
@@ -52,7 +51,7 @@ export async function registerRoutes(app: Express) {
       }
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-4",
         messages: [
           {
             role: "system",
@@ -66,9 +65,9 @@ export async function registerRoutes(app: Express) {
         response_format: { type: "json_object" }
       });
 
-      const analysis = JSON.parse(response.choices[0].message.content || "{}") as SermonAnalysis;
+      console.log("OpenAI Response:", response.choices[0].message.content);
 
-      // Store the analysis results
+      const analysis = JSON.parse(response.choices[0].message.content) as SermonAnalysis;
       const updatedSermon = await storage.updateSermonAnalysis(sermonId, analysis);
       res.json(updatedSermon);
     } catch (error: any) {
@@ -88,27 +87,30 @@ export async function registerRoutes(app: Express) {
   });
 
   app.post("/api/sermons", authenticateUser, async (req, res) => {
-    const userId = req.user?.id;
-    if (!userId) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-
-    const parsed = insertSermonSchema.safeParse(req.body);
-    if (!parsed.success) {
-      return res.status(400).json({ message: "Invalid sermon data" });
-    }
-
-    const sermon = await storage.createSermon({
-      ...parsed.data,
-      userId,
-      analysis: null,
-      bibleReference: parsed.data.bibleReference || null,
-    });
-
-    // After creating the sermon, trigger analysis
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const parsed = insertSermonSchema.safeParse(req.body);
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Invalid sermon data" });
+      }
+
+      console.log("Creating sermon for user:", userId);
+      const sermon = await storage.createSermon({
+        ...parsed.data,
+        userId,
+        analysis: null,
+        bibleReference: parsed.data.bibleReference || null,
+      });
+
+      // Immediately analyze the sermon
+      console.log("Starting sermon analysis for:", sermon.id);
+
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: "gpt-4",
         messages: [
           {
             role: "system",
@@ -122,12 +124,15 @@ export async function registerRoutes(app: Express) {
         response_format: { type: "json_object" }
       });
 
-      const analysis = JSON.parse(response.choices[0].message.content || "{}") as SermonAnalysis;
+      console.log("OpenAI Response received");
+      const analysis = JSON.parse(response.choices[0].message.content) as SermonAnalysis;
       const updatedSermon = await storage.updateSermonAnalysis(sermon.id, analysis);
+
+      console.log("Analysis completed for sermon:", sermon.id);
       res.json(updatedSermon);
-    } catch (error) {
-      // If analysis fails, return the sermon without analysis
-      res.json(sermon);
+    } catch (error: any) {
+      console.error("Error in /api/sermons:", error);
+      res.status(500).json({ message: "Failed to analyze sermon" });
     }
   });
 
