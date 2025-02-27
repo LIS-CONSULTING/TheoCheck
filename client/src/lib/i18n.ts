@@ -15,6 +15,8 @@ const fr = {
     notifications: "Notifications",
     contact: "Contact",
     about: "À propos",
+    languageChanged: "Langue modifiée",
+    languageChangeEffect: "Les changements sont appliqués",
   },
   home: {
     title: "Analysez vos sermons avec l'IA",
@@ -62,10 +64,23 @@ const fr = {
     theologicalTradition: "Tradition Théologique",
     downloadPdf: "Télécharger le Rapport PDF"
   },
+  about: {
+    title: "À propos de TheoCheck",
+    mission: {
+      title: "Notre Mission",
+      description: "Chez TheoCheck, nous croyons que chaque prédicateur a un message puissant à transmettre. Notre mission est d'aider les orateurs à affiner leur prédication en alliant la richesse de la tradition chrétienne aux outils les plus avancés de l'intelligence artificielle."
+    },
+    features: {
+      title: "TheoCheck : L'IA au service de votre prédication",
+      description: "Prêchez avec clarté, puissance et impact. TheoCheck analyse vos sermons en profondeur et vous offre un retour précis sur la structure, la théologie, l'application pratique et l'engagement de votre message.",
+      tagline: "Affinez votre prédication. Renforcez votre impact."
+    }
+  },
   settings: {
     notifications: {
       email: "Notifications par email",
       analysis: "Notifications d'analyse",
+      updated: "Préférences mises à jour",
       toggle: {
         enable: "Activer",
         disable: "Désactiver"
@@ -87,6 +102,8 @@ const en = {
     notifications: "Notifications",
     contact: "Contact",
     about: "About",
+    languageChanged: "Language Changed",
+    languageChangeEffect: "Changes have been applied",
   },
   home: {
     title: "Analyze Your Sermons with AI",
@@ -134,10 +151,23 @@ const en = {
     theologicalTradition: "Theological Tradition",
     downloadPdf: "Download PDF Report"
   },
+  about: {
+    title: "About TheoCheck",
+    mission: {
+      title: "Our Mission",
+      description: "At TheoCheck, we believe every preacher has a powerful message to convey. Our mission is to help speakers refine their preaching by combining the richness of Christian tradition with the most advanced artificial intelligence tools."
+    },
+    features: {
+      title: "TheoCheck: AI at the Service of Your Preaching",
+      description: "Preach with clarity, power, and impact. TheoCheck analyzes your sermons in depth and provides precise feedback on structure, theology, practical application, and message engagement.",
+      tagline: "Refine your preaching. Strengthen your impact."
+    }
+  },
   settings: {
     notifications: {
       email: "Email notifications",
       analysis: "Analysis notifications",
+      updated: "Preferences updated",
       toggle: {
         enable: "Enable",
         disable: "Disable"
