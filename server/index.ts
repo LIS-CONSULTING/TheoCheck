@@ -1,41 +1,12 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import admin from "firebase-admin";
-import path, { dirname } from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
-import { getFirestore } from "firebase-admin/firestore";
+import { initializeFirebase } from "./lib/firebase";
 
-// Initialize Firebase Admin
 try {
   log("Initializing Firebase Admin...");
-  if (!process.env.FIREBASE_PROJECT_ID) {
-    throw new Error("Missing required Firebase environment variables");
-  }
-
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-
-  const serviceAccount = JSON.parse(
-    fs.readFileSync(
-      path.join(__dirname, "..", "attached_assets", "sermon-gpt-firebase-adminsdk-fbsvc-c97471f784.json")
-    ).toString()
-  );
-
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-
-  // Initialize Firestore
-  const db = getFirestore();
-  // Create the contacts collection if it doesn't exist
-  db.collection('contacts').get().then(() => {
-    log("Firestore 'contacts' collection is accessible");
-  }).catch((error) => {
-    log(`Error accessing Firestore: ${error.message}`);
-  });
-
+  // Initialize Firebase and get Firestore instance
+  const db = initializeFirebase();
   log("Firebase Admin and Firestore initialized successfully");
 } catch (error: any) {
   log(`Firebase Admin initialization error: ${error.message}`);
