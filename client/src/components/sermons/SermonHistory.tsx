@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import type { Sermon } from "@shared/schema";
 import {
   Card,
@@ -17,6 +18,7 @@ import { FileText, Calendar, BookOpen } from "lucide-react";
 import { SermonAnalysisView } from "./SermonAnalysis";
 
 export function SermonHistory() {
+  const [, setLocation] = useLocation();
   const { data: sermons, isLoading } = useQuery<Sermon[]>({
     queryKey: ["/api/sermons"],
   });
@@ -90,12 +92,22 @@ export function SermonHistory() {
             )}
           </CardContent>
           <CardFooter className="bg-muted/5 flex items-center justify-end gap-2 border-t p-4">
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => setLocation(`/analysis/${sermon.id}`)}
+            >
               <FileText className="mr-2 h-4 w-4" />
-              Voir le texte complet
+              Voir l'analyse complète
             </Button>
             {sermon.analysis && (
-              <Button size="sm">
+              <Button 
+                size="sm"
+                onClick={() => {
+                  // Generate PDF report (to be implemented)
+                  console.log("Generating PDF for sermon:", sermon.id);
+                }}
+              >
                 Télécharger le rapport
               </Button>
             )}
