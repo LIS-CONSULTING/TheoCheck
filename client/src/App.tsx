@@ -11,12 +11,14 @@ import Contact from "@/pages/contact";
 import About from "@/pages/about";
 import Privacy from "@/pages/privacy";
 import { LoginPage } from "@/components/auth/LoginPage";
+import Analysis from "@/pages/analysis";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/analyze" component={Analyze} />
+      <Route path="/analysis/:id" component={Analysis} />
       <Route path="/history" component={History} />
       <Route path="/contact" component={Contact} />
       <Route path="/about" component={About} />
