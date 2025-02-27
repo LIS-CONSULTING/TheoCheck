@@ -9,6 +9,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
+import { Loader2 } from "lucide-react";
 
 const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -25,6 +26,12 @@ export function ContactForm() {
 
   const form = useForm<ContactForm>({
     resolver: zodResolver(contactSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      subject: "",
+      message: ""
+    }
   });
 
   const mutation = useMutation({
@@ -34,10 +41,18 @@ export function ContactForm() {
     },
     onSuccess: () => {
       toast({
-        title: "Success",
-        description: "Your message has been sent",
+        title: t("contact.success"),
+        description: t("contact.successMessage"),
       });
       form.reset();
+    },
+    onError: (error: any) => {
+      console.error("Contact form error:", error);
+      toast({
+        title: t("contact.error"),
+        description: t("contact.errorMessage"),
+        variant: "destructive",
+      });
     },
   });
 
@@ -97,7 +112,14 @@ export function ContactForm() {
           )}
         />
         <Button type="submit" disabled={mutation.isPending}>
-          {t("contact.form.submit")}
+          {mutation.isPending ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {t("contact.form.sending")}
+            </>
+          ) : (
+            t("contact.form.submit")
+          )}
         </Button>
       </form>
     </Form>

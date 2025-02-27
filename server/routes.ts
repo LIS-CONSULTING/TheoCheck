@@ -5,6 +5,7 @@ import { insertSermonSchema, type SermonAnalysis } from "@shared/schema";
 import OpenAI from "openai";
 import admin from "firebase-admin";
 import PDFDocument from "pdfkit";
+import { getFirestore } from "firebase-admin/firestore";
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is required");
@@ -295,8 +296,36 @@ export async function registerRoutes(app: Express) {
   });
 
   app.post("/api/contact", async (req, res) => {
-    // In a real app, you would send this to an email service
-    res.json({ message: "Message received" });
+    try {
+      const { name, email, subject, message } = req.body;
+
+      // Get Firestore instance
+      const db = getFirestore();
+
+      // Add timestamp to the contact submission
+      const contactData = {
+        name,
+        email,
+        subject,
+        message,
+        createdAt: new Date(),
+        status: 'new' // For tracking purposes
+      };
+
+      // Add to 'contacts' collection
+      await db.collection('contacts').add(contactData);
+
+      res.json({
+        success: true,
+        message: "Message received successfully"
+      });
+    } catch (error) {
+      console.error("Error saving contact form:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to save contact form"
+      });
+    }
   });
 
   app.get("/api/sermons/:id/pdf", authenticateUser, async (req, res) => {

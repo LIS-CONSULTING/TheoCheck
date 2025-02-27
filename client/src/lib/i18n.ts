@@ -103,12 +103,17 @@ const fr = {
   contact: {
     title: "Contactez-nous",
     description: "Notre équipe est là pour vous aider. N'hésitez pas à nous contacter pour toute question.",
+    success: "Message envoyé",
+    successMessage: "Votre message a été envoyé avec succès. Nous vous répondrons dans les plus brefs délais.",
+    error: "Erreur",
+    errorMessage: "Une erreur s'est produite lors de l'envoi du message. Veuillez réessayer.",
     form: {
       name: "Nom",
       email: "Email",
       message: "Message",
       subject: "Sujet",
-      submit: "Envoyer"
+      submit: "Envoyer",
+      sending: "Envoi en cours..."
     }
   },
   settings: {
@@ -230,12 +235,17 @@ const en = {
   contact: {
     title: "Contact Us",
     description: "Our team is here to help. Feel free to reach out with any questions.",
+    success: "Message Sent",
+    successMessage: "Your message has been sent successfully. We will get back to you soon.",
+    error: "Error",
+    errorMessage: "An error occurred while sending your message. Please try again.",
     form: {
       name: "Name",
       email: "Email",
       message: "Message",
       subject: "Subject",
-      submit: "Send"
+      submit: "Send",
+      sending: "Sending..."
     }
   },
   settings: {
