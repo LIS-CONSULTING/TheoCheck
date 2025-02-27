@@ -67,7 +67,9 @@ export async function registerRoutes(app: Express) {
             content: sermon.content
           }
         ],
-        response_format: { type: "json_object" }
+        response_format: { type: "json_object" },
+        max_tokens: 4000,
+        temperature: 0.7
       });
 
       console.log("OpenAI Response:", response.choices[0].message.content);
@@ -81,7 +83,7 @@ export async function registerRoutes(app: Express) {
       let status = 500;
 
       if (error.status === 429) {
-        message = "Analysis service is temporarily unavailable. Please try again in a few minutes.";
+        message = "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.";
         status = 429;
       } else if (error.status === 401) {
         message = "API authentication error. Please contact support.";
@@ -140,7 +142,9 @@ export async function registerRoutes(app: Express) {
             content: sermon.content
           }
         ],
-        response_format: { type: "json_object" }
+        response_format: { type: "json_object" },
+        max_tokens: 4000,
+        temperature: 0.7
       });
 
       console.log("OpenAI Response received");
@@ -155,7 +159,7 @@ export async function registerRoutes(app: Express) {
       let status = 500;
 
       if (error.status === 429) {
-        message = "Analysis service is temporarily unavailable. Please try again in a few minutes.";
+        message = "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.";
         status = 429;
       } else if (error.status === 401) {
         message = "API authentication error. Please contact support.";
