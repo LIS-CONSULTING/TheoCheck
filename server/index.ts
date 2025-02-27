@@ -5,6 +5,7 @@ import admin from "firebase-admin";
 import path, { dirname } from "path";
 import fs from "fs";
 import { fileURLToPath } from "url";
+import { getFirestore } from "firebase-admin/firestore";
 
 // Initialize Firebase Admin
 try {
@@ -25,7 +26,17 @@ try {
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
-  log("Firebase Admin initialized successfully");
+
+  // Initialize Firestore
+  const db = getFirestore();
+  // Create the contacts collection if it doesn't exist
+  db.collection('contacts').get().then(() => {
+    log("Firestore 'contacts' collection is accessible");
+  }).catch((error) => {
+    log(`Error accessing Firestore: ${error.message}`);
+  });
+
+  log("Firebase Admin and Firestore initialized successfully");
 } catch (error: any) {
   log(`Firebase Admin initialization error: ${error.message}`);
   process.exit(1);
