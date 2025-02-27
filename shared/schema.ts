@@ -7,6 +7,7 @@ export const users = pgTable("users", {
   firebaseId: text("firebase_id").notNull().unique(),
   email: text("email").notNull(),
   displayName: text("display_name"),
+  preferences: json("preferences").$type<UserPreferences>(),
 });
 
 export const sermons = pgTable("sermons", {
@@ -16,6 +17,8 @@ export const sermons = pgTable("sermons", {
   content: text("content").notNull(),
   bibleReference: text("bible_reference"),
   analysis: json("analysis").$type<SermonAnalysis>(),
+  topics: json("topics").$type<string[]>(),
+  theologicalTradition: text("theological_tradition"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -28,6 +31,15 @@ export type SermonAnalysis = {
   strengths: string[];
   improvements: string[];
   summary: string;
+  topics: string[]; // Extracted topics from the sermon
+  theologicalTradition: string; // Identified theological tradition
+};
+
+export type UserPreferences = {
+  favoriteTopics: string[];
+  theologicalTradition: string;
+  preferredStyle: string;
+  lastViewedSermons: number[];
 };
 
 export const insertUserSchema = createInsertSchema(users).pick({

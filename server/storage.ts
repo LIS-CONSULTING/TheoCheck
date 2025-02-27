@@ -1,10 +1,11 @@
-import { users, type User, type InsertUser, sermons, type Sermon, type SermonAnalysis } from "@shared/schema";
+import { users, type User, type InsertUser, sermons, type Sermon, type SermonAnalysis, type UserPreferences } from "@shared/schema";
 
 export interface IStorage {
   // User operations
   getUser(id: number): Promise<User | undefined>;
   getUserByFirebaseId(firebaseId: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+  updateUserPreferences(userId: number, preferences: UserPreferences): Promise<User>;
 
   // Sermon operations
   getSermon(id: number): Promise<Sermon | undefined>;
@@ -44,9 +45,30 @@ export class MemStorage implements IStorage {
       firebaseId: insertUser.firebaseId,
       email: insertUser.email,
       displayName: insertUser.displayName || null,
+      preferences: {
+        favoriteTopics: [],
+        theologicalTradition: "",
+        preferredStyle: "",
+        lastViewedSermons: []
+      }
     };
     this.users.set(id, user);
     return user;
+  }
+
+  async updateUserPreferences(userId: number, preferences: UserPreferences): Promise<User> {
+    const user = await this.getUser(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const updatedUser = {
+      ...user,
+      preferences
+    };
+
+    this.users.set(userId, updatedUser);
+    return updatedUser;
   }
 
   // Sermon methods
@@ -68,6 +90,8 @@ export class MemStorage implements IStorage {
       ...sermon,
       id,
       createdAt,
+      topics: [],
+      theologicalTradition: null,
     };
 
     this.sermons.set(id, newSermon);
@@ -83,6 +107,8 @@ export class MemStorage implements IStorage {
     const updatedSermon = {
       ...sermon,
       analysis,
+      topics: analysis.topics,
+      theologicalTradition: analysis.theologicalTradition,
     };
 
     this.sermons.set(id, updatedSermon);
