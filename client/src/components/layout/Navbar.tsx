@@ -57,13 +57,19 @@ export function Navbar() {
         </Link>
         <div className="ml-auto flex items-center space-x-4">
           <Link href="/analyze">
-            <a className="text-sm font-medium">{t("common.analyze")}</a>
+            <Button variant="ghost" className="text-sm font-medium">
+              {t("common.analyze")}
+            </Button>
           </Link>
           <Link href="/about">
-            <a className="text-sm font-medium">{t("common.about")}</a>
+            <Button variant="ghost" className="text-sm font-medium">
+              {t("common.about")}
+            </Button>
           </Link>
           <Link href="/contact">
-            <a className="text-sm font-medium">{t("common.contact")}</a>
+            <Button variant="ghost" className="text-sm font-medium">
+              {t("common.contact")}
+            </Button>
           </Link>
           {user ? (
             <>
