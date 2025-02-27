@@ -316,82 +316,219 @@ export async function registerRoutes(app: Express) {
         return res.status(403).json({ message: "Unauthorized" });
       }
 
-      // Create PDF
-      const doc = new PDFDocument();
+      // Create PDF with better styling
+      const doc = new PDFDocument({
+        margins: { top: 50, bottom: 50, left: 50, right: 50 },
+        size: 'A4'
+      });
       doc.pipe(res);
 
       // Set response headers
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader('Content-Disposition', `attachment; filename=analyse-sermon-${sermonId}.pdf`);
 
-      // Add content to PDF
-      doc.fontSize(20).text('Analyse de Sermon', { align: 'center' });
-      doc.moveDown();
+      // Header
+      doc.fontSize(24)
+        .fillColor('#1a365d')
+        .text('TheoCheck', { align: 'center' });
 
-      // Title and date
-      doc.fontSize(16).text(sermon.title);
-      doc.fontSize(12).text(`Date: ${new Date(sermon.createdAt).toLocaleDateString('fr-FR')}`);
-      doc.moveDown();
+      doc.fontSize(16)
+        .fillColor('#4a5568')
+        .text('Rapport d\'Analyse de Sermon', { align: 'center' });
+
+      doc.moveDown(2);
+
+      // Title and date section
+      doc.fontSize(20)
+        .fillColor('#2d3748')
+        .text(sermon.title);
+
+      doc.fontSize(12)
+        .fillColor('#718096')
+        .text(`Date d'analyse: ${new Date().toLocaleDateString('fr-FR')}`)
+        .moveDown();
+
+      // Divider
+      doc.moveTo(50, doc.y)
+        .lineTo(545, doc.y)
+        .stroke('#e2e8f0');
 
       const analysis = sermon.analysis;
       if (analysis) {
-        // Overall score
-        doc.fontSize(14).text(`Note Globale: ${analysis.overallScore}/10`);
-        doc.moveDown();
+        // Overall score with visual emphasis
+        doc.moveDown()
+          .fontSize(16)
+          .fillColor('#2d3748')
+          .text('Note Globale', { continued: true })
+          .fillColor('#48bb78')
+          .text(`: ${analysis.overallScore}/10`, { align: 'right' })
+          .moveDown();
 
-        // Detailed scores
-        doc.fontSize(14).text('Scores Détaillés:');
+        // Scores section with visual presentation
+        doc.fontSize(14)
+          .fillColor('#2d3748')
+          .text('Évaluation Détaillée')
+          .moveDown(0.5);
+
+        const scores = [
+          { label: 'Fidélité Biblique', score: analysis.scores.fideliteBiblique },
+          { label: 'Structure', score: analysis.scores.structure },
+          { label: 'Application Pratique', score: analysis.scores.applicationPratique },
+          { label: 'Authenticité', score: analysis.scores.authenticite },
+          { label: 'Interactivité', score: analysis.scores.interactivite }
+        ];
+
+        scores.forEach(({ label, score }) => {
+          const barWidth = score * 40; // Scale the bar width based on score
+          doc.fontSize(12)
+            .fillColor('#4a5568')
+            .text(`${label}: ${score}/10`, { continued: false });
+
+          // Draw score bar
+          doc.rect(doc.x, doc.y, barWidth, 10)
+            .fill('#48bb78');
+          doc.moveDown(0.8);
+        });
+
+        // Key Insights section
+        doc.moveDown()
+          .fontSize(16)
+          .fillColor('#2d3748')
+          .text('Points Clés')
+          .moveDown(0.5);
+
         doc.fontSize(12)
-          .text(`Fidélité Biblique: ${analysis.scores.fideliteBiblique}/10`)
-          .text(`Structure: ${analysis.scores.structure}/10`)
-          .text(`Application Pratique: ${analysis.scores.applicationPratique}/10`)
-          .text(`Authenticité: ${analysis.scores.authenticite}/10`)
-          .text(`Interactivité: ${analysis.scores.interactivite}/10`);
-        doc.moveDown();
+          .fillColor('#4a5568')
+          .text(analysis.summary)
+          .moveDown();
 
-        // Strengths
-        doc.fontSize(14).text('Points Forts:');
+        // Strengths section with visual bullets
+        doc.fontSize(14)
+          .fillColor('#2d3748')
+          .text('Points Forts')
+          .moveDown(0.5);
+
         analysis.strengths.forEach(strength => {
-          doc.fontSize(12).text(`• ${strength}`);
+          doc.fontSize(12)
+            .fillColor('#48bb78')
+            .text('•', { continued: true })
+            .fillColor('#4a5568')
+            .text(` ${strength}`)
+            .moveDown(0.5);
         });
-        doc.moveDown();
 
-        // Improvements
-        doc.fontSize(14).text('Points à Améliorer:');
+        // Areas for Improvement with recommendations
+        doc.moveDown()
+          .fontSize(14)
+          .fillColor('#2d3748')
+          .text('Recommandations d\'Amélioration')
+          .moveDown(0.5);
+
         analysis.improvements.forEach(improvement => {
-          doc.fontSize(12).text(`• ${improvement}`);
+          doc.fontSize(12)
+            .fillColor('#e53e3e')
+            .text('•', { continued: true })
+            .fillColor('#4a5568')
+            .text(` ${improvement}`)
+            .moveDown(0.5);
         });
-        doc.moveDown();
 
-        // Summary
-        doc.fontSize(14).text('Résumé:');
-        doc.fontSize(12).text(analysis.summary);
-        doc.moveDown();
+        // Biblical References section
+        doc.moveDown()
+          .fontSize(14)
+          .fillColor('#2d3748')
+          .text('Références Bibliques')
+          .moveDown(0.5);
 
-        // Biblical references
-        doc.fontSize(14).text('Références Bibliques:');
         analysis.keyScriptures.forEach(scripture => {
-          doc.fontSize(12).text(`• ${scripture}`);
+          doc.fontSize(12)
+            .fillColor('#4a5568')
+            .text(`• ${scripture}`)
+            .moveDown(0.3);
         });
-        doc.moveDown();
 
-        // Application points
-        doc.fontSize(14).text("Points d'Application:");
+        // Practical Application
+        doc.moveDown()
+          .fontSize(14)
+          .fillColor('#2d3748')
+          .text('Applications Pratiques')
+          .moveDown(0.5);
+
         analysis.applicationPoints.forEach(point => {
-          doc.fontSize(12).text(`• ${point}`);
+          doc.fontSize(12)
+            .fillColor('#4a5568')
+            .text(`• ${point}`)
+            .moveDown(0.3);
         });
-        doc.moveDown();
 
-        // Theological tradition
-        doc.fontSize(14).text('Tradition Théologique:');
-        doc.fontSize(12).text(analysis.theologicalTradition);
+        // Theological Analysis
+        doc.moveDown()
+          .fontSize(14)
+          .fillColor('#2d3748')
+          .text('Analyse Théologique')
+          .moveDown(0.5);
+
+        doc.fontSize(12)
+          .fillColor('#4a5568')
+          .text(`Tradition Théologique: ${analysis.theologicalTradition}`)
+          .moveDown();
+
+        // Audience Engagement Analysis
+        doc.moveDown()
+          .fontSize(14)
+          .fillColor('#2d3748')
+          .text('Analyse de l\'Engagement')
+          .moveDown(0.5);
+
+        const engagementScores = [
+          { label: 'Connection Émotionnelle', score: analysis.audienceEngagement.emotional },
+          { label: 'Compréhension Théologique', score: analysis.audienceEngagement.intellectual },
+          { label: 'Application Quotidienne', score: analysis.audienceEngagement.practical }
+        ];
+
+        engagementScores.forEach(({ label, score }) => {
+          doc.fontSize(12)
+            .fillColor('#4a5568')
+            .text(`${label}: ${score}/10`)
+            .moveDown(0.3);
+        });
+
+        // Recommendations for Next Sermon
+        doc.moveDown()
+          .fontSize(14)
+          .fillColor('#2d3748')
+          .text('Recommandations pour le Prochain Sermon')
+          .moveDown(0.5);
+
+        doc.fontSize(12)
+          .fillColor('#4a5568')
+          .text('Pour améliorer votre prochain sermon, concentrez-vous sur:')
+          .moveDown(0.3);
+
+        const recommendations = [
+          'Maintenez vos points forts actuels tout en travaillant sur les aspects à améliorer',
+          'Utilisez plus d\'illustrations pour renforcer vos points principaux',
+          'Structurez votre message avec des transitions plus claires',
+          'Incluez des moments de réflexion pour l\'engagement de l\'auditoire'
+        ];
+
+        recommendations.forEach(rec => {
+          doc.text(`• ${rec}`).moveDown(0.3);
+        });
+
+        // Footer
+        doc.fontSize(10)
+          .fillColor('#718096')
+          .text('TheoCheck - Analyse IA de Sermons', 50, doc.page.height - 50, {
+            align: 'center'
+          });
       }
 
       // Finalize PDF
       doc.end();
     } catch (error) {
       console.error("Error generating PDF:", error);
-      res.status(500).json({ message: "Failed to generate PDF report" });
+      res.status(500).json({ message: "Erreur lors de la génération du rapport PDF" });
     }
   });
 
