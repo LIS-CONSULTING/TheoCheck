@@ -94,43 +94,40 @@ const fr = {
     title: "À propos de TheoCheck",
     mission: {
       title: "Notre Mission",
-      description: "Chez TheoCheck, nous croyons que chaque prédicateur a un message puissant à transmettre. Notre mission est d'aider les orateurs à affiner leur prédication en alliant la richesse de la tradition chrétienne aux outils les plus avancés de l'intelligence artificielle."
+      description: "Dans un monde où les principes de base du christianisme sont le plus souvent ignorés, les églises et les pasteurs sont appelés à communiquer l'évangile avec justesse et clarté. Mais comment savoir si une prédication va réellement toucher son auditoire ?"
     },
-    features: {
-      title: "TheoCheck : L'IA au service de votre prédication",
-      description: "Prêchez avec clarté, puissance et impact. TheoCheck analyse vos sermons en profondeur et vous offre un retour précis sur la structure, la théologie, l'application pratique et l'engagement de votre message.",
-      tagline: "Affinez votre prédication. Renforcez votre impact."
+    solution: {
+      title: "TheoCheck est la solution",
+      description: "Nous offrons une évaluation précise de vos prises de parole en nous appuyant sur des critères objectifs et une analyse guidée par des principes bibliques."
     },
-    whoweare: {
-      title: "Qui sommes-nous ?",
-      description: "Chez TheoCheck, nous sommes une équipe passionnée par l'innovation au service de la prédication. Notre mission est d'aider les prédicateurs à affiner leur message en alliant la richesse de la tradition chrétienne aux outils les plus avancés de l'intelligence artificielle."
+    quote: {
+      text: "Il n'existe aucune raison pour que la prédication de l'Évangile soit vécue comme un fardeau, ni pour l'orateur ni pour son auditoire.",
+      author: "Charles Spurgeon"
     },
+    future: {
+      text: "Demain, les pasteurs ne se demanderont plus seulement \"As-tu bien préparé ta prédication ?\" mais \"Est-ce que tu l'as ThéoChecké ?\""
+    },
+    commitment: {
+      text: "Parce que la vérité mérite d'être bien communiquée, et que la croissance spirituelle passe par une évaluation constructive."
+    },
+    tagline: "TheoCheck – Nous guidons, l'Esprit assiste.",
     team: {
-      title: "Notre Équipe",
-      description: "Une équipe multidisciplinaire combinant expertise théologique et technologique.",
-      members: [
-        {
-          name: "Dr. Thomas Laurent",
-          role: "Directeur Théologique"
+      title: "Qui sommes-nous ?",
+      description: "Nous sommes une équipe désireuse de mettre la technologie au service de l'évangile.",
+      members: {
+        stephane: {
+          name: "Stéphane",
+          description: "Des idées plein la tête, une vie professionnelle déjà bien remplie, j'ai créé il y a deux ans Par L'Écoute, une société de services chrétienne friendly pour mettre mes compétences au service des organisations qui servent l'évangile, et développer des projets qui poursuivent le même objectif."
         },
-        {
-          name: "Marie Dubois",
-          role: "Experte en IA"
+        lev: {
+          name: "Lev",
+          description: "À 19 ans, lycéen passionné par le marketing, j'ai intégré plusieurs projets pour allier mes compétences en communication et ma volonté d'aider ceux dans le besoin. En lien avec la communauté des réfugiés ukrainiens, mon objectif est de proposer des solutions marketing innovantes qui répondent aux besoins spécifiques de ceux qui cherchent à se reconstruire et à s'intégrer. Mon but ? Créer des stratégies modernes et efficaces pour faire grandir des initiatives sociales et solidaires."
         },
-        {
-          name: "Pr. Jean Martin",
-          role: "Consultant en Homilétique"
-        },
-        {
-          name: "Sarah Cohen",
-          role: "Développeuse Senior"
+        ivan: {
+          name: "Ivan",
+          description: "Lycéen de 18 ans, intéressé par la technologie et l'innovation, j'ai intégré TheoCheck pour combiner mes compétences techniques avec l'objectif de soutenir les prédicateurs. Mon but ? Proposer une solution moderne et efficace pour améliorer la qualité des prédications, en offrant une analyse précise et objective."
         }
-      ]
-    },
-    project: {
-      title: "Notre Projet",
-      description: "TheoCheck est né de la volonté d'accompagner les prédicateurs dans leur mission. Notre plateforme analyse vos sermons en profondeur et vous offre un retour précis sur la structure, la théologie, l'application pratique et l'engagement de votre message.",
-      tagline: "Affinez votre prédication. Renforcez votre impact."
+      }
     }
   },
   contact: {
@@ -283,43 +280,40 @@ const en = {
     title: "About TheoCheck",
     mission: {
       title: "Our Mission",
-      description: "At TheoCheck, we believe every preacher has a powerful message to convey. Our mission is to help speakers refine their preaching by combining the richness of Christian tradition with the most advanced artificial intelligence tools."
+      description: "In a world where the basic principles of Christianity are often ignored, churches and pastors are called to communicate the gospel with accuracy and clarity. But how can we ensure that a sermon will truly reach its audience?"
     },
-    features: {
-      title: "TheoCheck: AI at the Service of Your Preaching",
-      description: "Preach with clarity, power, and impact. TheoCheck analyzes your sermons in depth and provides precise feedback on structure, theology, practical application, and message engagement.",
-      tagline: "Refine your preaching. Strengthen your impact."
+    solution: {
+      title: "TheoCheck is the solution",
+      description: "We offer precise evaluation of your speaking by relying on objective criteria and analysis guided by biblical principles."
     },
-    whoweare: {
-      title: "Who We Are",
-      description: "At TheoCheck, we are a team passionate about innovation in service of preaching. Our mission is to help preachers refine their message by combining the richness of Christian tradition with the most advanced artificial intelligence tools."
+    quote: {
+      text: "No reason exists why the preaching of the gospel should be a miserable operation either to the speaker or to the hearer.",
+      author: "Charles Spurgeon"
     },
+    future: {
+      text: "Tomorrow, pastors won't just ask \"Have you prepared your sermon well?\" but \"Have you TheoChecked it?\""
+    },
+    commitment: {
+      text: "Because truth deserves to be well communicated, and spiritual growth comes through constructive evaluation."
+    },
+    tagline: "TheoCheck – We guide, the Spirit assists.",
     team: {
-      title: "Our Team",
-      description: "A multidisciplinary team combining theological and technological expertise.",
-      members: [
-        {
-          name: "Dr. Thomas Laurent",
-          role: "Theological Director"
+      title: "Who are we?",
+      description: "We are a team eager to put technology at the service of the gospel.",
+      members: {
+        stephane: {
+          name: "Stéphane",
+          description: "Full of ideas and with an already busy professional life, two years ago I created Par L'Écoute, a Christian-friendly service company to put my skills at the service of organizations that serve the gospel, and develop projects that pursue the same goal."
         },
-        {
-          name: "Marie Dubois",
-          role: "AI Expert"
+        lev: {
+          name: "Lev",
+          description: "At 19, a high school student passionate about marketing, I've joined several projects to combine my communication skills with my desire to help those in need. Connected with the Ukrainian refugee community, my goal is to offer innovative marketing solutions that meet the specific needs of those seeking to rebuild and integrate. My aim? Create modern and effective strategies to grow social and solidarity initiatives."
         },
-        {
-          name: "Prof. Jean Martin",
-          role: "Homiletics Consultant"
-        },
-        {
-          name: "Sarah Cohen",
-          role: "Senior Developer"
+        ivan: {
+          name: "Ivan",
+          description: "An 18-year-old high school student interested in technology and innovation, I joined TheoCheck to combine my technical skills with the goal of supporting preachers. My aim? Provide a modern and effective solution to improve the quality of preaching by offering precise and objective analysis."
         }
-      ]
-    },
-    project: {
-      title: "Our Project",
-      description: "TheoCheck was born from the desire to support preachers in their mission. Our platform analyzes your sermons in depth and provides precise feedback on structure, theology, practical application, and message engagement.",
-      tagline: "Refine your preaching. Strengthen your impact."
+      }
     }
   },
   contact: {
