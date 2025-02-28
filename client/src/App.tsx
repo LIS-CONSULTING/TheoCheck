@@ -13,6 +13,7 @@ import Privacy from "@/pages/privacy";
 import { LoginPage } from "@/components/auth/LoginPage";
 import Analysis from "@/pages/analysis";
 import Settings from "@/pages/settings";
+import ErrorPage from "@/pages/error";
 
 // Import i18n configuration
 import "./lib/i18n";
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/privacy" component={Privacy} />
       <Route path="/login" component={LoginPage} />
       <Route path="/settings" component={Settings} />
+      <Route path="/error" component={ErrorPage} />
       <Route component={NotFound} />
     </Switch>
   );
