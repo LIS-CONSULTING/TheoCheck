@@ -19,13 +19,10 @@ const firebaseConfig = {
   authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.firebaseapp.com`,
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID}.appspot.com`,
+  messagingSenderId: "438085883204",
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: "G-MR6LCCED68"
 };
-
-console.log("Firebase Config:", {
-  projectId: firebaseConfig.projectId,
-  authDomain: firebaseConfig.authDomain,
-});
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
