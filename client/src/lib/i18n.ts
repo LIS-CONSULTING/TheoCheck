@@ -17,7 +17,8 @@ const fr = {
     about: "À propos",
     languageChanged: "Langue modifiée",
     languageChangeEffect: "Les changements sont appliqués",
-    error: "Erreur"
+    error: "Erreur",
+    comingSoon: "bientôt disponible"
   },
   home: {
     title: "Analysez vos sermons avec l'IA",
@@ -148,14 +149,36 @@ const fr = {
     }
   },
   settings: {
-    notifications: {
-      email: "Notifications par email",
-      analysis: "Notifications d'analyse",
-      updated: "Préférences mises à jour",
-      toggle: {
-        enable: "Activer",
-        disable: "Désactiver"
+    title: "Paramètres",
+    success: "Paramètres sauvegardés",
+    successMessage: "Vos préférences ont été mises à jour avec succès.",
+    error: "Erreur",
+    errorMessage: "Une erreur est survenue lors de la sauvegarde des paramètres.",
+    saving: "Sauvegarde en cours...",
+    save: "Sauvegarder les changements",
+    preferences: {
+      title: "Préférences d'Analyse",
+      description: "Personnalisez la façon dont vos sermons sont analysés",
+      theologicalTradition: "Tradition Théologique",
+      select: "Sélectionnez...",
+      traditions: {
+        reformed: "Réformée",
+        lutheran: "Luthérienne",
+        catholic: "Catholique",
+        baptist: "Baptiste",
+        pentecostal: "Pentecôtiste"
       }
+    },
+    theme: {
+      title: "Apparence",
+      description: "Personnalisez l'apparence de l'application",
+      darkMode: "Mode sombre"
+    },
+    notifications: {
+      title: "Notifications",
+      description: "Gérez vos préférences de notification",
+      email: "Notifications par Email",
+      analysis: "Analyse Terminée"
     }
   },
   errors: {
@@ -180,7 +203,8 @@ const en = {
     about: "About",
     languageChanged: "Language Changed",
     languageChangeEffect: "Changes have been applied",
-    error: "Error"
+    error: "Error",
+    comingSoon: "coming soon"
   },
   home: {
     title: "Analyze Your Sermons with AI",
@@ -311,14 +335,36 @@ const en = {
     }
   },
   settings: {
-    notifications: {
-      email: "Email notifications",
-      analysis: "Analysis notifications",
-      updated: "Preferences updated",
-      toggle: {
-        enable: "Enable",
-        disable: "Disable"
+    title: "Settings",
+    success: "Settings saved",
+    successMessage: "Your preferences have been updated successfully.",
+    error: "Error",
+    errorMessage: "An error occurred while saving settings.",
+    saving: "Saving...",
+    save: "Save changes",
+    preferences: {
+      title: "Analysis Preferences",
+      description: "Customize how your sermons are analyzed",
+      theologicalTradition: "Theological Tradition",
+      select: "Select...",
+      traditions: {
+        reformed: "Reformed",
+        lutheran: "Lutheran",
+        catholic: "Catholic",
+        baptist: "Baptist",
+        pentecostal: "Pentecostal"
       }
+    },
+    theme: {
+      title: "Appearance",
+      description: "Customize the application appearance",
+      darkMode: "Dark mode"
+    },
+    notifications: {
+      title: "Notifications",
+      description: "Manage your notification preferences",
+      email: "Email notifications",
+      analysis: "Analysis Complete"
     }
   },
   errors: {
