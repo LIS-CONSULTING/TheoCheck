@@ -15,7 +15,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Settings, Languages, Bell } from "lucide-react";
+import { Settings, Languages } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
@@ -24,28 +24,12 @@ export function Navbar() {
   const { user } = useAuth();
   const { toast } = useToast();
   const { t, i18n } = useTranslation();
-  const [notifications, setNotifications] = useState({
-    email: true,
-    analysis: true,
-  });
 
   const handleLanguageChange = (value: string) => {
     i18n.changeLanguage(value);
     toast({
       title: t("common.languageChanged"),
       description: t("common.languageChangeEffect"),
-    });
-  };
-
-  const toggleNotification = (type: "email" | "analysis") => {
-    setNotifications(prev => ({
-      ...prev,
-      [type]: !prev[type],
-    }));
-    toast({
-      title: t("settings.notifications.updated"),
-      description: t(`settings.notifications.${type}`) + " " +
-        (notifications[type] ? t("settings.notifications.toggle.disable") : t("settings.notifications.toggle.enable")),
     });
   };
 
@@ -97,20 +81,6 @@ export function Navbar() {
                         <DropdownMenuRadioItem value="fr">Français</DropdownMenuRadioItem>
                         <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
                       </DropdownMenuRadioGroup>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuSub>
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger>
-                      <Bell className="mr-2 h-4 w-4" />
-                      <span>{t("common.notifications")}</span>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuSubContent>
-                      <DropdownMenuItem onClick={() => toggleNotification("email")}>
-                        {notifications.email ? t("settings.notifications.toggle.disable") : t("settings.notifications.toggle.enable")} {t("settings.notifications.email")}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => toggleNotification("analysis")}>
-                        {notifications.analysis ? t("settings.notifications.toggle.disable") : t("settings.notifications.toggle.enable")} {t("settings.notifications.analysis")}
-                      </DropdownMenuItem>
                     </DropdownMenuSubContent>
                   </DropdownMenuSub>
                 </DropdownMenuContent>
