@@ -18,7 +18,8 @@ const fr = {
     languageChanged: "Langue modifiée",
     languageChangeEffect: "Les changements sont appliqués",
     error: "Erreur",
-    comingSoon: "bientôt disponible"
+    comingSoon: "bientôt disponible",
+    returnHome: "Retour à l'accueil"
   },
   home: {
     title: "Analysez vos sermons avec l'IA",
@@ -184,7 +185,9 @@ const fr = {
   errors: {
     error: "Erreur",
     loginRequired: "Veuillez vous connecter pour télécharger le rapport",
-    pdfDownloadFailed: "Erreur lors du téléchargement du rapport"
+    pdfDownloadFailed: "Erreur lors du téléchargement du rapport",
+    analysisError: "Erreur d'analyse",
+    serviceUnavailable: "Le service d'analyse est temporairement indisponible. Veuillez réessayer dans quelques minutes."
   }
 };
 
@@ -204,7 +207,8 @@ const en = {
     languageChanged: "Language Changed",
     languageChangeEffect: "Changes have been applied",
     error: "Error",
-    comingSoon: "coming soon"
+    comingSoon: "coming soon",
+    returnHome: "Return to Home"
   },
   home: {
     title: "Analyze Your Sermons with AI",
@@ -370,7 +374,9 @@ const en = {
   errors: {
     error: "Error",
     loginRequired: "Please login to download the report",
-    pdfDownloadFailed: "Failed to download the report"
+    pdfDownloadFailed: "Failed to download the report",
+    analysisError: "Analysis Error",
+    serviceUnavailable: "The analysis service is temporarily unavailable. Please try again in a few minutes."
   }
 };
 
