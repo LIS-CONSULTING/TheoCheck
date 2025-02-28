@@ -3,7 +3,6 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { useTranslation } from "react-i18next";
 import {
   Select,
@@ -100,26 +99,6 @@ export default function Settings() {
               >
                 {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
               </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("settings.notifications.title")}</CardTitle>
-            <CardDescription>
-              {t("settings.notifications.description")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="email-notifications">{t("settings.notifications.email")}</Label>
-              <Switch id="email-notifications" />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <Label htmlFor="analysis-complete">{t("settings.notifications.analysis")}</Label>
-              <Switch id="analysis-complete" />
             </div>
           </CardContent>
         </Card>
