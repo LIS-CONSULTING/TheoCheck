@@ -10,21 +10,38 @@ export default function About() {
 
       <Card className="mb-8">
         <CardContent className="pt-6">
-          <h2 className="mb-4 text-xl font-semibold">{t("about.mission.title")}</h2>
+          <h2 className="mb-4 text-xl font-semibold">{t("about.whoweare.title")}</h2>
           <p className="text-muted-foreground">
-            {t("about.mission.description")}
+            {t("about.whoweare.description")}
           </p>
+        </CardContent>
+      </Card>
+
+      <Card className="mb-8">
+        <CardContent className="pt-6">
+          <h2 className="mb-4 text-xl font-semibold">{t("about.team.title")}</h2>
+          <p className="text-muted-foreground">
+            {t("about.team.description")}
+          </p>
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {t("about.team.members", { returnObjects: true }).map((member, index) => (
+              <div key={index} className="p-4 rounded-lg bg-muted/50">
+                <h3 className="font-semibold mb-2">{member.name}</h3>
+                <p className="text-sm text-muted-foreground">{member.role}</p>
+              </div>
+            ))}
+          </div>
         </CardContent>
       </Card>
 
       <Card>
         <CardContent className="pt-6">
-          <h2 className="mb-4 text-xl font-semibold">{t("about.features.title")}</h2>
-          <p className="text-muted-foreground">
-            {t("about.features.description")}
+          <h2 className="mb-4 text-xl font-semibold">{t("about.project.title")}</h2>
+          <p className="text-muted-foreground mb-4">
+            {t("about.project.description")}
           </p>
-          <p className="text-muted-foreground mt-4 font-semibold">
-            {t("about.features.tagline")}
+          <p className="text-muted-foreground font-semibold">
+            {t("about.project.tagline")}
           </p>
         </CardContent>
       </Card>

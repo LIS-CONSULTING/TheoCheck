@@ -98,6 +98,37 @@ const fr = {
       title: "TheoCheck : L'IA au service de votre prédication",
       description: "Prêchez avec clarté, puissance et impact. TheoCheck analyse vos sermons en profondeur et vous offre un retour précis sur la structure, la théologie, l'application pratique et l'engagement de votre message.",
       tagline: "Affinez votre prédication. Renforcez votre impact."
+    },
+    whoweare: {
+      title: "Qui sommes-nous ?",
+      description: "Chez TheoCheck, nous sommes une équipe passionnée par l'innovation au service de la prédication. Notre mission est d'aider les prédicateurs à affiner leur message en alliant la richesse de la tradition chrétienne aux outils les plus avancés de l'intelligence artificielle."
+    },
+    team: {
+      title: "Notre Équipe",
+      description: "Une équipe multidisciplinaire combinant expertise théologique et technologique.",
+      members: [
+        {
+          name: "Dr. Thomas Laurent",
+          role: "Directeur Théologique"
+        },
+        {
+          name: "Marie Dubois",
+          role: "Experte en IA"
+        },
+        {
+          name: "Pr. Jean Martin",
+          role: "Consultant en Homilétique"
+        },
+        {
+          name: "Sarah Cohen",
+          role: "Développeuse Senior"
+        }
+      ]
+    },
+    project: {
+      title: "Notre Projet",
+      description: "TheoCheck est né de la volonté d'accompagner les prédicateurs dans leur mission. Notre plateforme analyse vos sermons en profondeur et vous offre un retour précis sur la structure, la théologie, l'application pratique et l'engagement de votre message.",
+      tagline: "Affinez votre prédication. Renforcez votre impact."
     }
   },
   contact: {
@@ -229,6 +260,37 @@ const en = {
     features: {
       title: "TheoCheck: AI at the Service of Your Preaching",
       description: "Preach with clarity, power, and impact. TheoCheck analyzes your sermons in depth and provides precise feedback on structure, theology, practical application, and message engagement.",
+      tagline: "Refine your preaching. Strengthen your impact."
+    },
+    whoweare: {
+      title: "Who We Are",
+      description: "At TheoCheck, we are a team passionate about innovation in service of preaching. Our mission is to help preachers refine their message by combining the richness of Christian tradition with the most advanced artificial intelligence tools."
+    },
+    team: {
+      title: "Our Team",
+      description: "A multidisciplinary team combining theological and technological expertise.",
+      members: [
+        {
+          name: "Dr. Thomas Laurent",
+          role: "Theological Director"
+        },
+        {
+          name: "Marie Dubois",
+          role: "AI Expert"
+        },
+        {
+          name: "Prof. Jean Martin",
+          role: "Homiletics Consultant"
+        },
+        {
+          name: "Sarah Cohen",
+          role: "Senior Developer"
+        }
+      ]
+    },
+    project: {
+      title: "Our Project",
+      description: "TheoCheck was born from the desire to support preachers in their mission. Our platform analyzes your sermons in depth and provides precise feedback on structure, theology, practical application, and message engagement.",
       tagline: "Refine your preaching. Strengthen your impact."
     }
   },
