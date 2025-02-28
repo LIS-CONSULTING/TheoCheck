@@ -12,6 +12,12 @@ import { useLocation } from "wouter";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
+const MALICIOUS_PATTERNS = [
+  "IGNORE ALL PREVIOUS INSTRUCTIONS",
+  "IGNORE PREVIOUS INSTRUCTIONS",
+  "DISREGARD ALL INSTRUCTIONS",
+];
+
 export function SermonForm() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
@@ -28,6 +34,17 @@ export function SermonForm() {
 
   const mutation = useMutation({
     mutationFn: async (data: InsertSermon) => {
+      // Check for malicious content before submitting
+      const hasMaliciousContent = MALICIOUS_PATTERNS.some(pattern => 
+        data.content.toUpperCase().includes(pattern) || 
+        data.title.toUpperCase().includes(pattern)
+      );
+
+      if (hasMaliciousContent) {
+        setLocation("/error");
+        throw new Error("Potentially harmful content detected");
+      }
+
       const res = await apiRequest("POST", "/api/sermons", data);
       return res.json();
     },
@@ -42,6 +59,12 @@ export function SermonForm() {
     },
     onError: (error: any) => {
       console.error("Sermon submission error:", error);
+
+      // If it's the malicious content error, we've already redirected
+      if (error.message === "Potentially harmful content detected") {
+        return;
+      }
+
       let errorMessage = t("sermons.analysisError");
 
       if (error.message) {
@@ -57,6 +80,11 @@ export function SermonForm() {
         description: errorMessage,
         variant: "destructive",
       });
+
+      // Redirect to error page for serious errors
+      if (error.message.includes("429") || error.message.includes("401")) {
+        setLocation("/error");
+      }
     },
   });
 
