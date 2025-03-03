@@ -15,6 +15,12 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Settings, Languages, Menu } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
@@ -99,7 +105,18 @@ export function Navbar() {
         <Link href="/">
           <a className="flex items-center">
             <span className="text-xl md:text-2xl font-bold tracking-tight">TheoCheck</span>
-            <span className="ml-2 text-xs md:text-sm bg-red-100 text-red-600 px-1.5 py-0.5 rounded-md font-medium">BETA</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="ml-2 text-xs md:text-sm bg-red-100 text-red-600 px-1.5 py-0.5 rounded-md font-medium cursor-help">
+                    BETA
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-[250px] text-sm">
+                  Notre site est en phase de développement. Des bugs peuvent survenir et de nouvelles fonctionnalités seront régulièrement ajoutées.
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </a>
         </Link>
 
