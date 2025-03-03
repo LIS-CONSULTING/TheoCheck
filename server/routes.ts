@@ -13,17 +13,49 @@ if (!process.env.OPENAI_API_KEY) {
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-// Example of a modified prompt with additional evaluation criteria
-const SERMON_ANALYSIS_PROMPT_FR = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
+const SERMON_ANALYSIS_PROMPT_FR = `Mission : TheoCheck analyse les sermons chrétiens de manière rigoureuse et impartiale pour garantir leur fidélité biblique, leur clarté structurelle et leur impact. Un même sermon doit toujours obtenir la même note.
+
+Critères d'évaluation (Notation sur 10 avec pondération):
+
+1. Fidélité biblique et pertinence théologique (35%)
+- Vérifier que le sermon repose sur un enseignement biblique clair et correctement interprété
+- Analyser les passages utilisés : sont-ils cités dans leur contexte ?
+- Détecter toute erreur théologique ou interprétation erronée
+- Identifier les omissions problématiques
+- Pénaliser sévèrement les hérésies ou enseignements contraires aux Écritures
+
+2. Structure, clarté et simplicité (20%)
+- Vérifier la structure logique : introduction, développement, conclusion
+- Détecter les redondances, digressions et incohérences
+- Mesurer la clarté des idées pour l'auditoire cible
+- Pénaliser la confusion et la désorganisation
+
+3. Application pratique et engagement émotionnel (15%)
+- Analyser les applications concrètes pour la vie chrétienne
+- Vérifier la réflexion personnelle et l'engagement spirituel
+- Identifier le niveau d'implication émotionnelle
+- Pénaliser l'excès théorique ou le manque d'applications
+
+4. Authenticité, passion et impact spirituel (15%)
+- Évaluer la sincérité du prédicateur
+- Détecter l'inspiration à la transformation spirituelle
+- Vérifier l'engagement et la passion pour l'Évangile
+- Pénaliser le mécanisme et l'artificialité
+
+5. Interactivité, gestion du temps et pertinence contextuelle (15%)
+- Vérifier l'encouragement à la réflexion et participation
+- Analyser l'adéquation au contexte culturel et spirituel
+- Évaluer la gestion du temps et l'équilibre
+- Pénaliser les sermons mal calibrés ou inadaptés
 
 Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
 {
   "scores": {
-    "fideliteBiblique": number (1-10, évaluation de l'ancrage dans les Écritures et l'interprétation),
-    "structure": number (1-10, évaluation de la clarté et la simplicité),
-    "applicationPratique": number (1-10, évaluation de l'application concrète et engagement émotionnel),
-    "authenticite": number (1-10, évaluation de la passion et impact spirituel),
-    "interactivite": number (1-10, évaluation de la gestion du temps et pertinence contextuelle)
+    "fideliteBiblique": number (1-10),
+    "structure": number (1-10),
+    "applicationPratique": number (1-10),
+    "authenticite": number (1-10),
+    "interactivite": number (1-10)
   },
   "overallScore": number (1-10),
   "strengths": string[] (3-5 points forts spécifiques),
@@ -41,16 +73,49 @@ Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
   }
 }`;
 
-const SERMON_ANALYSIS_PROMPT_EN = `Mission: TheoCheck is designed to provide a comprehensive and constructive evaluation of Christian sermons. Be as objective as possible: the same sermon should always receive the same score.
+const SERMON_ANALYSIS_PROMPT_EN = `Mission: TheoCheck analyzes Christian sermons rigorously and impartially to ensure their biblical fidelity, structural clarity, and impact. The same sermon should always receive the same score.
+
+Evaluation Criteria (Scoring out of 10 with weighting):
+
+1. Biblical Fidelity and Theological Relevance (35%)
+- Verify that the sermon is based on clear and correctly interpreted biblical teaching
+- Analyze passages used: are they cited in context?
+- Detect any theological errors or misinterpretations
+- Identify problematic omissions
+- Severely penalize heresies or teachings contrary to Scripture
+
+2. Structure, Clarity, and Simplicity (20%)
+- Verify logical structure: introduction, development, conclusion
+- Detect redundancies, digressions, and inconsistencies
+- Measure clarity of ideas for target audience
+- Penalize confusion and disorganization
+
+3. Practical Application and Emotional Engagement (15%)
+- Analyze concrete applications for Christian life
+- Verify personal reflection and spiritual engagement
+- Identify level of emotional involvement
+- Penalize theoretical excess or lack of applications
+
+4. Authenticity, Passion, and Spiritual Impact (15%)
+- Evaluate preacher's sincerity
+- Detect inspiration for spiritual transformation
+- Verify engagement and passion for the Gospel
+- Penalize mechanistic delivery and artificiality
+
+5. Interactivity, Time Management, and Contextual Relevance (15%)
+- Verify encouragement of reflection and participation
+- Analyze appropriateness to cultural and spiritual context
+- Evaluate time management and balance
+- Penalize poorly calibrated or inappropriate sermons
 
 Analyze the provided sermon and respond in JSON format with the following structure:
 {
   "scores": {
-    "biblicalFidelity": number (1-10, evaluation of Scripture anchoring and interpretation),
-    "structure": number (1-10, evaluation of clarity and simplicity),
-    "practicalApplication": number (1-10, evaluation of concrete application and emotional engagement),
-    "authenticity": number (1-10, evaluation of passion and spiritual impact),
-    "interactivity": number (1-10, evaluation of time management and contextual relevance)
+    "biblicalFidelity": number (1-10),
+    "structure": number (1-10),
+    "practicalApplication": number (1-10),
+    "authenticity": number (1-10),
+    "interactivity": number (1-10)
   },
   "overallScore": number (1-10),
   "strengths": string[] (3-5 specific strengths),
