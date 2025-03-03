@@ -10,10 +10,10 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 md:py-24">
       <div className="text-center">
-        <h1 className="text-3xl md:text-4xl font-bold tracking-tight sm:text-6xl">
+        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
           {t("home.title")}
         </h1>
-        <p className="mt-4 md:mt-6 text-lg md:text-xl leading-8 text-muted-foreground">
+        <p className="mt-4 md:mt-8 text-lg md:text-2xl lg:text-3xl leading-8 text-muted-foreground max-w-4xl mx-auto">
           {t("home.subtitle")}
         </p>
         <div className="mt-8 md:mt-10 flex items-center justify-center gap-x-4 md:gap-x-6">
