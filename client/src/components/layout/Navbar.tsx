@@ -97,7 +97,10 @@ export function Navbar() {
     <nav className="border-b bg-background">
       <div className="mx-auto flex h-14 md:h-16 max-w-7xl items-center px-4">
         <Link href="/">
-          <a className="text-xl md:text-2xl font-bold tracking-tight">TheoCheck</a>
+          <a className="flex items-center">
+            <span className="text-xl md:text-2xl font-bold tracking-tight">TheoCheck</span>
+            <span className="ml-2 text-xs md:text-sm bg-red-100 text-red-600 px-1.5 py-0.5 rounded-md font-medium">BETA</span>
+          </a>
         </Link>
 
         {isMobile ? (
