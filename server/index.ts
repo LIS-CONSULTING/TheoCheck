@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -10,21 +11,31 @@ import { getFirestore } from "firebase-admin/firestore";
 // Initialize Firebase Admin
 try {
   log("Initializing Firebase Admin...");
-  if (!process.env.FIREBASE_PROJECT_ID) {
-    throw new Error("Missing required Firebase environment variables");
-  }
-
+  
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
 
-  const serviceAccount = JSON.parse(
-    fs.readFileSync(
-      path.join(__dirname, "..", "attached_assets", "sermon-gpt-firebase-adminsdk-fbsvc-c97471f784.json")
-    ).toString()
-  );
+  // Load service account file
+  const serviceAccountPath = path.join(__dirname, "..", "attached_assets", "sermon-gpt-firebase-adminsdk-fbsvc-c97471f784.json");
+  
+  if (!fs.existsSync(serviceAccountPath)) {
+    throw new Error(`Service account file not found at ${serviceAccountPath}`);
+  }
+
+  const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath).toString());
+  
+  // Make sure project ID is available
+  const projectId = process.env.FIREBASE_PROJECT_ID || serviceAccount.project_id;
+  
+  if (!projectId) {
+    throw new Error("Firebase project ID not found in environment or service account file");
+  }
 
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
+    credential: admin.credential.cert({
+      ...serviceAccount,
+      projectId,
+    }),
   });
 
   // Initialize Firestore
