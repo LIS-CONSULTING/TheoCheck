@@ -38,23 +38,23 @@ export function Navbar() {
   };
 
   const NavItems = () => (
-    <>
+    <div className="flex flex-col space-y-2">
       <Link href="/analyze">
-        <Button variant="ghost" className="text-base font-medium px-6 h-12">
+        <Button variant="ghost" className="w-full justify-start text-base font-medium px-4 h-11">
           {t("common.analyze")}
         </Button>
       </Link>
       <Link href="/about">
-        <Button variant="ghost" className="text-base font-medium px-6 h-12">
+        <Button variant="ghost" className="w-full justify-start text-base font-medium px-4 h-11">
           {t("common.about")}
         </Button>
       </Link>
       <Link href="/contact">
-        <Button variant="ghost" className="text-base font-medium px-6 h-12">
+        <Button variant="ghost" className="w-full justify-start text-base font-medium px-4 h-11">
           {t("common.contact")}
         </Button>
       </Link>
-    </>
+    </div>
   );
 
   const UserMenu = () => (
@@ -104,7 +104,7 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
+      <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center space-x-4">
           <Link href="/" className="flex items-center space-x-3">
             <span className="text-2xl font-bold tracking-tight">TheoCheck</span>
@@ -119,12 +119,10 @@ export function Navbar() {
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px] p-6">
-              <div className="flex flex-col space-y-6">
-                <div className="flex flex-col space-y-2">
-                  <NavItems />
-                </div>
-                <div className="mt-auto pt-6">
+            <SheetContent side="right" className="w-[300px] sm:w-[350px] p-6">
+              <div className="flex flex-col h-full">
+                <NavItems />
+                <div className="mt-auto">
                   <UserMenu />
                 </div>
               </div>
@@ -132,7 +130,7 @@ export function Navbar() {
           </Sheet>
         ) : (
           <>
-            <div className="hidden md:flex md:items-center md:space-x-6">
+            <div className="hidden md:flex md:flex-col md:items-start md:space-y-2">
               <NavItems />
             </div>
             <div className="hidden md:flex md:items-center md:space-x-4">
