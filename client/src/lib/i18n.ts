@@ -19,7 +19,8 @@ const fr = {
     languageChangeEffect: "Les changements sont appliqués",
     error: "Erreur",
     comingSoon: "bientôt disponible",
-    returnHome: "Retour à l'accueil"
+    returnHome: "Retour à l'accueil",
+    betaMessage: "TheoCheck est en version bêta. Des nouvelles fonctionnalités et améliorations sont en cours de développement. Vous pourriez rencontrer quelques bugs."
   },
   home: {
     title: "Analysez vos sermons avec l'IA",
@@ -205,7 +206,8 @@ const en = {
     languageChangeEffect: "Changes have been applied",
     error: "Error",
     comingSoon: "coming soon",
-    returnHome: "Return to Home"
+    returnHome: "Return to Home",
+    betaMessage: "TheoCheck is in beta. New features and improvements are under development. You may encounter some bugs."
   },
   home: {
     title: "Analyze Your Sermons with AI",
