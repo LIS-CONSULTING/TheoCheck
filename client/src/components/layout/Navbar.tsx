@@ -40,17 +40,17 @@ export function Navbar() {
   const NavItems = () => (
     <>
       <Link href="/analyze">
-        <Button variant="ghost" className="text-base font-medium px-6 h-12">
+        <Button variant="ghost" className="w-full md:w-auto text-base font-medium px-6 h-12 justify-start md:justify-center">
           {t("common.analyze")}
         </Button>
       </Link>
       <Link href="/about">
-        <Button variant="ghost" className="text-base font-medium px-6 h-12">
+        <Button variant="ghost" className="w-full md:w-auto text-base font-medium px-6 h-12 justify-start md:justify-center">
           {t("common.about")}
         </Button>
       </Link>
       <Link href="/contact">
-        <Button variant="ghost" className="text-base font-medium px-6 h-12">
+        <Button variant="ghost" className="w-full md:w-auto text-base font-medium px-6 h-12 justify-start md:justify-center">
           {t("common.contact")}
         </Button>
       </Link>
@@ -62,39 +62,46 @@ export function Navbar() {
       {user ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="h-10 w-10">
-              <Settings className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="h-12 w-12">
+              <Settings className="h-6 w-6" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="text-base">{t("common.settings")}</DropdownMenuLabel>
+          <DropdownMenuContent align="end" className="w-64">
+            <DropdownMenuLabel className="text-base px-3 py-2">{t("common.settings")}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Link href="/settings">
-              <DropdownMenuItem className="text-base py-3">
+              <DropdownMenuItem className="text-base px-3 py-2.5">
                 {t("common.userPreferences")}
               </DropdownMenuItem>
             </Link>
             <DropdownMenuSub>
-              <DropdownMenuSubTrigger className="text-base py-3">
+              <DropdownMenuSubTrigger className="text-base px-3 py-2.5">
                 <Languages className="mr-3 h-5 w-5" />
                 <span>{t("common.language")}</span>
               </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
+              <DropdownMenuSubContent className="min-w-[8rem]">
                 <DropdownMenuRadioGroup value={i18n.language} onValueChange={handleLanguageChange}>
-                  <DropdownMenuRadioItem value="fr" className="text-base py-3">Français</DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="en" className="text-base py-3">English</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="fr" className="text-base px-3 py-2.5">
+                    Français
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="en" className="text-base px-3 py-2.5">
+                    English
+                  </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>
             </DropdownMenuSub>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => auth.signOut()} className="text-base py-3">
+            <DropdownMenuItem 
+              onClick={() => auth.signOut()} 
+              className="text-base px-3 py-2.5"
+            >
               {t("common.logout")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
         <Link href="/login">
-          <Button size="lg" className="text-base px-6">
+          <Button size="lg" className="w-full md:w-auto text-base px-6 h-12">
             {t("common.login")}
           </Button>
         </Link>
@@ -104,9 +111,9 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
-        <div className="flex items-center space-x-4">
-          <Link href="/" className="flex items-center space-x-3">
+      <div className="container flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center">
+          <Link href="/" className="flex items-center space-x-3 mr-6">
             <span className="text-2xl font-bold tracking-tight">TheoCheck</span>
           </Link>
         </div>
@@ -114,17 +121,17 @@ export function Navbar() {
         {isMobile ? (
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-10 w-10">
+              <Button variant="ghost" size="icon" className="h-12 w-12 ml-4">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px] p-6">
-              <div className="flex flex-col space-y-6">
-                <div className="flex flex-col space-y-2">
+            <SheetContent side="right" className="w-[300px] sm:w-[380px] p-6">
+              <div className="flex flex-col h-full">
+                <div className="flex-1 space-y-2">
                   <NavItems />
                 </div>
-                <div className="mt-auto pt-6">
+                <div className="pt-6 border-t">
                   <UserMenu />
                 </div>
               </div>
@@ -132,10 +139,10 @@ export function Navbar() {
           </Sheet>
         ) : (
           <>
-            <div className="hidden md:flex md:items-center md:space-x-6">
+            <div className="hidden md:flex md:items-center md:space-x-2">
               <NavItems />
             </div>
-            <div className="hidden md:flex md:items-center md:space-x-4">
+            <div className="hidden md:flex md:items-center md:pl-4">
               <UserMenu />
             </div>
           </>
