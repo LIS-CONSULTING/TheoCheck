@@ -10,10 +10,10 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 md:py-24">
       <div className="text-center">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight sm:text-6xl">
           {t("home.title")}
         </h1>
-        <p className="mt-4 md:mt-6 text-lg md:text-xl leading-8 text-muted-foreground max-w-3xl mx-auto">
+        <p className="mt-4 md:mt-6 text-lg md:text-xl leading-8 text-muted-foreground">
           {t("home.subtitle")}
         </p>
         <div className="mt-8 md:mt-10 flex items-center justify-center gap-x-4 md:gap-x-6">
@@ -39,23 +39,23 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="mt-16 md:mt-24 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
         {(['analysis', 'visualization', 'report'] as const).map((feature) => (
           <div 
             key={feature}
-            className="p-6 md:p-8 rounded-lg bg-card hover:bg-muted/50 transition-colors border border-border"
+            className="p-4 md:p-6 rounded-lg bg-card hover:bg-muted/50 transition-colors"
           >
-            <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-primary">
+            <h3 className="text-lg md:text-xl font-bold mb-2 md:mb-3 text-primary">
               {t(`home.features.${feature}.title`)}
             </h3>
-            <p className="text-base md:text-lg mb-4 md:mb-6 font-medium">
+            <p className="text-sm md:text-base mb-3 md:mb-4">
               {t(`home.features.${feature}.description`)}
             </p>
-            <ul className="space-y-3 text-muted-foreground text-base md:text-lg">
+            <ul className="space-y-1.5 md:space-y-2 text-muted-foreground text-sm md:text-base">
               {(t(`home.features.${feature}.items`, { returnObjects: true }) as string[]).map((item, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <span className="inline-block text-primary text-lg font-bold mt-1 shrink-0">●</span>
-                  <span className="leading-tight">{item}</span>
+                <li key={index} className="flex items-start">
+                  <span className="inline-block text-primary mr-2 shrink-0">●</span>
+                  <span>{item}</span>
                 </li>
               ))}
             </ul>
