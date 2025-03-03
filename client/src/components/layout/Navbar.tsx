@@ -112,8 +112,11 @@ export function Navbar() {
                     BETA
                   </span>
                 </TooltipTrigger>
-                <TooltipContent className="max-w-[250px] text-sm">
-                  Notre site est en phase de développement. Des bugs peuvent survenir et de nouvelles fonctionnalités seront régulièrement ajoutées.
+                <TooltipContent className="max-w-[250px] text-sm text-red-600">
+                  {t("common.betaMessage", {
+                    defaultValue: "Our site is in development phase. Bugs may occur and new features will be regularly added.",
+                    fr: "Notre site est en phase de développement. Des bugs peuvent survenir et de nouvelles fonctionnalités seront régulièrement ajoutées."
+                  })}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
