@@ -113,10 +113,7 @@ export function Navbar() {
                   </span>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-[250px] text-sm text-red-600">
-                  {t("common.betaMessage", {
-                    defaultValue: "Our site is in development phase. Bugs may occur and new features will be regularly added.",
-                    fr: "Notre site est en phase de développement. Des bugs peuvent survenir et de nouvelles fonctionnalités seront régulièrement ajoutées."
-                  })}
+                  {t("common.betaMessage")}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -142,6 +139,10 @@ export function Navbar() {
                           {t("common.settings")}
                         </Button>
                       </Link>
+                      <Button variant="ghost" className="w-full justify-start" onClick={() => handleLanguageChange(i18n.language === 'fr' ? 'en' : 'fr')}>
+                        <Languages className="mr-2 h-4 w-4" />
+                        {i18n.language === 'fr' ? 'English' : 'Français'}
+                      </Button>
                       <Button variant="ghost" className="w-full justify-start" onClick={() => auth.signOut()}>
                         {t("common.logout")}
                       </Button>
