@@ -38,23 +38,23 @@ export function Navbar() {
   };
 
   const NavItems = () => (
-    <div className="flex flex-col gap-3">
+    <>
       <Link href="/analyze">
-        <Button variant="default" className="w-full justify-center text-base font-medium h-11">
+        <Button variant="ghost" className="text-base font-medium px-6 h-12">
           {t("common.analyze")}
         </Button>
       </Link>
       <Link href="/about">
-        <Button variant="ghost" className="w-full justify-center text-base font-medium h-11">
+        <Button variant="ghost" className="text-base font-medium px-6 h-12">
           {t("common.about")}
         </Button>
       </Link>
       <Link href="/contact">
-        <Button variant="ghost" className="w-full justify-center text-base font-medium h-11">
+        <Button variant="ghost" className="text-base font-medium px-6 h-12">
           {t("common.contact")}
         </Button>
       </Link>
-    </div>
+    </>
   );
 
   const UserMenu = () => (
@@ -94,7 +94,7 @@ export function Navbar() {
         </DropdownMenu>
       ) : (
         <Link href="/login">
-          <Button variant="outline" size="lg" className="text-base px-6">
+          <Button size="lg" className="text-base px-6">
             {t("common.login")}
           </Button>
         </Link>
@@ -104,42 +104,42 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center">
-        <div className="flex items-center flex-1 justify-between">
-          <Link href="/" className="flex items-center">
+      <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
+        <div className="flex items-center space-x-4">
+          <Link href="/" className="flex items-center space-x-3">
             <span className="text-2xl font-bold tracking-tight">TheoCheck</span>
           </Link>
-
-          {isMobile ? (
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-10 w-10">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] p-6">
-                <div className="flex flex-col h-full">
-                  <div className="flex-1 mt-8">
-                    <NavItems />
-                  </div>
-                  <div className="mt-auto pb-6 pt-6 border-t">
-                    <UserMenu />
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
-          ) : (
-            <>
-              <div className="flex-1 flex justify-center max-w-sm mx-4">
-                <NavItems />
-              </div>
-              <div className="flex items-center">
-                <UserMenu />
-              </div>
-            </>
-          )}
         </div>
+
+        {isMobile ? (
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-10 w-10">
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] p-6">
+              <div className="flex flex-col space-y-6">
+                <div className="flex flex-col space-y-2">
+                  <NavItems />
+                </div>
+                <div className="mt-auto pt-6">
+                  <UserMenu />
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        ) : (
+          <>
+            <div className="hidden md:flex md:items-center md:space-x-6">
+              <NavItems />
+            </div>
+            <div className="hidden md:flex md:items-center md:space-x-4">
+              <UserMenu />
+            </div>
+          </>
+        )}
       </div>
     </nav>
   );
