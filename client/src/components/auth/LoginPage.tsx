@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { auth } from "@/lib/firebase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { LoginForm, RegisterForm, loginSchema, registerSchema } from "@/lib/auth";
+import { useBreakpoint } from "@/hooks/use-mobile";
 
 import {
   Card,
@@ -30,6 +31,7 @@ export function LoginPage() {
   const { toast } = useToast();
   const [, setLocation] = useLocation();
   const [loading, setLoading] = useState(false);
+  const isTablet = useBreakpoint('tablet');
 
   const loginForm = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -120,35 +122,39 @@ export function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-gray-50 px-4">
-      <div className="grid w-full max-w-[1200px] gap-6 lg:grid-cols-2">
-        <Card className="lg:p-2">
-          <CardHeader>
-            <CardTitle className="text-2xl font-bold">
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-[1200px] grid gap-6 lg:grid-cols-2">
+        <Card className="w-full lg:p-2 shadow-lg">
+          <CardHeader className="space-y-2">
+            <CardTitle className="text-2xl sm:text-3xl font-bold text-center lg:text-left">
               Bienvenue sur TheoCheck
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-base sm:text-lg text-center lg:text-left">
               Connectez-vous pour commencer à analyser vos sermons
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Se connecter</TabsTrigger>
-                <TabsTrigger value="signup">S'inscrire</TabsTrigger>
+            <Tabs defaultValue="signin" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="signin" className="text-sm sm:text-base py-2">
+                  Se connecter
+                </TabsTrigger>
+                <TabsTrigger value="signup" className="text-sm sm:text-base py-2">
+                  S'inscrire
+                </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="signin">
+              <TabsContent value="signin" className="space-y-6">
                 <Form {...loginForm}>
-                  <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-4">
+                  <form onSubmit={loginForm.handleSubmit(handleLogin)} className="space-y-6">
                     <FormField
                       control={loginForm.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel className="text-base">Email</FormLabel>
                           <FormControl>
-                            <Input type="email" {...field} />
+                            <Input type="email" className="h-11" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -159,32 +165,32 @@ export function LoginPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Mot de passe</FormLabel>
+                          <FormLabel className="text-base">Mot de passe</FormLabel>
                           <FormControl>
-                            <Input type="password" {...field} />
+                            <Input type="password" className="h-11" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <Button type="submit" className="w-full h-11 text-base" disabled={loading}>
                       {loading ? "Connexion..." : "Se connecter"}
                     </Button>
                   </form>
                 </Form>
               </TabsContent>
 
-              <TabsContent value="signup">
+              <TabsContent value="signup" className="space-y-6">
                 <Form {...registerForm}>
-                  <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-4">
+                  <form onSubmit={registerForm.handleSubmit(handleRegister)} className="space-y-6">
                     <FormField
                       control={registerForm.control}
                       name="email"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Email</FormLabel>
+                          <FormLabel className="text-base">Email</FormLabel>
                           <FormControl>
-                            <Input type="email" {...field} />
+                            <Input type="email" className="h-11" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -195,9 +201,9 @@ export function LoginPage() {
                       name="password"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Mot de passe</FormLabel>
+                          <FormLabel className="text-base">Mot de passe</FormLabel>
                           <FormControl>
-                            <Input type="password" {...field} />
+                            <Input type="password" className="h-11" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -208,15 +214,15 @@ export function LoginPage() {
                       name="confirmPassword"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Confirmer le mot de passe</FormLabel>
+                          <FormLabel className="text-base">Confirmer le mot de passe</FormLabel>
                           <FormControl>
-                            <Input type="password" {...field} />
+                            <Input type="password" className="h-11" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
                     />
-                    <Button type="submit" className="w-full" disabled={loading}>
+                    <Button type="submit" className="w-full h-11 text-base" disabled={loading}>
                       {loading ? "Inscription..." : "S'inscrire"}
                     </Button>
                   </form>
@@ -226,21 +232,27 @@ export function LoginPage() {
           </CardContent>
         </Card>
 
-        <div className="hidden lg:block">
-          <div className="space-y-4 rounded-lg bg-primary/5 p-8">
-            <h2 className="text-2xl font-bold">Analysez vos sermons avec TheoCheck</h2>
-            <ul className="space-y-2">
-              <li className="flex items-center">
-                ✓ Analyse détaillée de la structure et du contenu
+        <div className={`${isTablet ? 'hidden' : 'block'} lg:block`}>
+          <div className="space-y-6 rounded-lg bg-primary/5 p-8 h-full flex flex-col justify-center">
+            <h2 className="text-2xl sm:text-3xl font-bold">
+              Analysez vos sermons avec TheoCheck
+            </h2>
+            <ul className="space-y-4 text-base sm:text-lg">
+              <li className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Analyse détaillée de la structure et du contenu
               </li>
-              <li className="flex items-center">
-                ✓ Graphiques interactifs pour visualiser les points forts
+              <li className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Graphiques interactifs pour visualiser les points forts
               </li>
-              <li className="flex items-center">
-                ✓ Suggestions personnalisées pour améliorer vos prédications
+              <li className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Suggestions personnalisées pour améliorer vos prédications
               </li>
-              <li className="flex items-center">
-                ✓ Rapports PDF téléchargeables
+              <li className="flex items-center gap-2">
+                <span className="text-primary">✓</span>
+                Rapports PDF téléchargeables
               </li>
             </ul>
           </div>

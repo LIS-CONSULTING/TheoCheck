@@ -1,19 +1,29 @@
 import * as React from "react"
 
-const MOBILE_BREAKPOINT = 768
+// Add more breakpoints for better responsive design
+export const BREAKPOINTS = {
+  mobile: 640,  // sm
+  tablet: 768,  // md
+  laptop: 1024, // lg
+  desktop: 1280 // xl
+} as const
 
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = React.useState<boolean | undefined>(undefined)
+export function useBreakpoint(breakpoint: keyof typeof BREAKPOINTS) {
+  const [matches, setMatches] = React.useState<boolean | undefined>(undefined)
 
   React.useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const mql = window.matchMedia(`(max-width: ${BREAKPOINTS[breakpoint] - 1}px)`)
     const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+      setMatches(mql.matches)
     }
     mql.addEventListener("change", onChange)
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    setMatches(mql.matches)
     return () => mql.removeEventListener("change", onChange)
-  }, [])
+  }, [breakpoint])
 
-  return !!isMobile
+  return matches
+}
+
+export function useIsMobile() {
+  return useBreakpoint('mobile')
 }
