@@ -15,7 +15,7 @@ import {
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from "@/components/ui/dropdown-menu";
-import { Menu, Settings, Languages, X } from "lucide-react";
+import { Menu, Settings, Languages } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "react-i18next";
@@ -40,17 +40,17 @@ export function Navbar() {
   const NavItems = () => (
     <>
       <Link href="/analyze">
-        <Button variant="ghost" className="text-sm font-medium">
+        <Button variant="ghost" className="text-base font-medium px-6 h-12">
           {t("common.analyze")}
         </Button>
       </Link>
       <Link href="/about">
-        <Button variant="ghost" className="text-sm font-medium">
+        <Button variant="ghost" className="text-base font-medium px-6 h-12">
           {t("common.about")}
         </Button>
       </Link>
       <Link href="/contact">
-        <Button variant="ghost" className="text-sm font-medium">
+        <Button variant="ghost" className="text-base font-medium px-6 h-12">
           {t("common.contact")}
         </Button>
       </Link>
@@ -60,43 +60,43 @@ export function Navbar() {
   const UserMenu = () => (
     <>
       {user ? (
-        <>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <Settings className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>{t("common.settings")}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <Link href="/settings">
-                <DropdownMenuItem>
-                  {t("common.userPreferences")}
-                </DropdownMenuItem>
-              </Link>
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <Languages className="mr-2 h-4 w-4" />
-                  <span>{t("common.language")}</span>
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  <DropdownMenuRadioGroup value={i18n.language} onValueChange={handleLanguageChange}>
-                    <DropdownMenuRadioItem value="fr">Français</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => auth.signOut()}>
-                {t("common.logout")}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-10 w-10">
+              <Settings className="h-5 w-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel className="text-base">{t("common.settings")}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <Link href="/settings">
+              <DropdownMenuItem className="text-base py-3">
+                {t("common.userPreferences")}
               </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </>
+            </Link>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="text-base py-3">
+                <Languages className="mr-3 h-5 w-5" />
+                <span>{t("common.language")}</span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                <DropdownMenuRadioGroup value={i18n.language} onValueChange={handleLanguageChange}>
+                  <DropdownMenuRadioItem value="fr" className="text-base py-3">Français</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="en" className="text-base py-3">English</DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => auth.signOut()} className="text-base py-3">
+              {t("common.logout")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ) : (
         <Link href="/login">
-          <Button size="sm">{t("common.login")}</Button>
+          <Button size="lg" className="text-base px-6">
+            {t("common.login")}
+          </Button>
         </Link>
       )}
     </>
@@ -104,25 +104,27 @@ export function Navbar() {
 
   return (
     <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <div className="mr-4 flex">
-          <Link href="/" className="mr-6 flex items-center space-x-2">
-            <span className="text-xl font-bold tracking-tight">TheoCheck</span>
+      <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8">
+        <div className="flex items-center space-x-4">
+          <Link href="/" className="flex items-center space-x-3">
+            <span className="text-2xl font-bold tracking-tight">TheoCheck</span>
           </Link>
         </div>
 
         {isMobile ? (
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="ml-auto md:hidden">
-                <Menu className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="h-10 w-10">
+                <Menu className="h-6 w-6" />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[80vw] sm:w-[350px]">
-              <div className="flex flex-col space-y-4 py-4">
-                <NavItems />
-                <div className="mt-auto">
+            <SheetContent side="right" className="w-[300px] sm:w-[400px] p-6">
+              <div className="flex flex-col space-y-6">
+                <div className="flex flex-col space-y-2">
+                  <NavItems />
+                </div>
+                <div className="mt-auto pt-6">
                   <UserMenu />
                 </div>
               </div>
@@ -130,13 +132,11 @@ export function Navbar() {
           </Sheet>
         ) : (
           <>
-            <div className="mr-4 hidden md:flex md:flex-1 md:items-center md:justify-between md:space-x-4">
-              <div className="flex items-center space-x-4">
-                <NavItems />
-              </div>
-              <div className="flex items-center space-x-4">
-                <UserMenu />
-              </div>
+            <div className="hidden md:flex md:items-center md:space-x-6">
+              <NavItems />
+            </div>
+            <div className="hidden md:flex md:items-center md:space-x-4">
+              <UserMenu />
             </div>
           </>
         )}
