@@ -122,11 +122,11 @@ const fr = {
         },
         lev: {
           name: "Lev",
-          description: "À 19 ans, lycéen passionné par le marketing, j'ai intégré plusieurs projets pour allier mes compétences en communication et ma volonté d'aider ceux dans le besoin. En lien avec la communauté des réfugiés ukrainiens, mon objectif est de proposer des solutions marketing innovantes qui répondent aux besoins spécifiques de ceux qui cherchent à se reconstruire et à s'intégrer. Mon but ? Créer des stratégies modernes et efficaces pour faire grandir des initiatives sociales et solidaires."
+          description: "Arrivé en France en 2022 après l'invasion de l'Ukraine et passionné par le marketing, je suis convaincu qu'il n'est jamais trop tôt pour se lancer. Le projet TheoCheck s'inscrit dans mon ambition d'intégrer le domaine du marketing après un BAC +3 en Techniques de Commercialisation des Systèmes Industriels. Il me permet d'acquérir des méthodes de travail efficaces et de développer des compétences essentielles pour mon avenir professionnel."
         },
         ivan: {
           name: "Ivan",
-          description: "Lycéen de 18 ans, intéressé par la technologie et l'innovation, j'ai intégré TheoCheck pour combiner mes compétences techniques avec l'objectif de soutenir les prédicateurs. Mon but ? Proposer une solution moderne et efficace pour améliorer la qualité des prédications, en offrant une analyse précise et objective."
+          description: "Lycéen de 18 ans, intéressé par la technologie et l'innovation, j'ai intégré TheoCheck pour développer des compétences dans le milieu du marketing et en apprendre plus sur les outils de l'intelligence artificielle. Je souhaite acquérir de l'expérience professionnelle et mettre mon travail au service des projets innovants et à fort impact. Curieux et motivé, je cherche à comprendre comment l'intelligence artificielle peut transformer le monde."
         }
       }
     }
@@ -309,11 +309,11 @@ const en = {
         },
         lev: {
           name: "Lev",
-          description: "At 19, a high school student passionate about marketing, I've joined several projects to combine my communication skills with my desire to help those in need. Connected with the Ukrainian refugee community, my goal is to offer innovative marketing solutions that meet the specific needs of those seeking to rebuild and integrate. My aim? Create modern and effective strategies to grow social and solidarity initiatives."
+          description: "Having arrived in France in 2022 after the invasion of Ukraine and passionate about marketing, I firmly believe it's never too early to start. The TheoCheck project aligns with my ambition to enter the marketing field after completing a Bachelor's degree in Industrial Systems Marketing. It allows me to acquire effective work methods and develop essential skills for my professional future."
         },
         ivan: {
           name: "Ivan",
-          description: "An 18-year-old high school student interested in technology and innovation, I joined TheoCheck to combine my technical skills with the goal of supporting preachers. My aim? Provide a modern and effective solution to improve the quality of preaching by offering precise and objective analysis."
+          description: "As an 18-year-old high school student interested in technology and innovation, I joined TheoCheck to develop skills in marketing and learn more about artificial intelligence tools. I aim to gain professional experience and contribute to innovative projects with significant impact. Curious and motivated, I seek to understand how artificial intelligence can transform the world."
         }
       }
     }
