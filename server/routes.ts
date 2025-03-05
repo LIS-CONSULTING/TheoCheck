@@ -8,103 +8,19 @@ import PDFDocument from "pdfkit";
 import { getFirestore } from "firebase-admin/firestore";
 import path from "path";
 
-// Initialize Firebase Admin with explicit credential structure
-const adminConfig = {
-  credential: admin.credential.cert({
-    projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-    clientEmail: process.env.VITE_FIREBASE_PROJECT_ID ? `firebase-adminsdk-${process.env.VITE_FIREBASE_PROJECT_ID}@${process.env.VITE_FIREBASE_PROJECT_ID}.iam.gserviceaccount.com` : '',
-    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-  }),
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID
-};
-
-console.log("Initializing Firebase Admin with config:", {
-  projectId: adminConfig.projectId,
-  hasPrivateKey: !!process.env.FIREBASE_PRIVATE_KEY,
-  clientEmail: adminConfig.credential.clientEmail
-});
-
-try {
-  admin.initializeApp(adminConfig);
-  console.log("Firebase Admin initialized successfully");
-} catch (error) {
-  console.error("Error initializing Firebase Admin:", error);
-  throw error;
+// Simple Firebase Admin initialization
+if (!admin.apps.length) {
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+    })
+  });
 }
 
-// Get Firestore instance
 const db = getFirestore();
 
-// Initialize contacts collection
-async function initializeContactsCollection() {
-  try {
-    const snapshot = await db.collection('contacts').get();
-    console.log('Contacts collection status:', snapshot.empty ? 'Empty' : `${snapshot.size} documents`);
-  } catch (error) {
-    console.error('Error accessing contacts collection:', error);
-  }
-}
-
-initializeContactsCollection();
-
-// Example of a modified prompt with additional evaluation criteria
-const SERMON_ANALYSIS_PROMPT_FR = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
-\n\nAnalyse le sermon fourni et réponds au format JSON avec la structure suivante:
-\n{
-  "scores": {
-    "fideliteBiblique": number (1-10, évaluation de l'ancrage dans les Écritures et l'interprétation),
-    "structure": number (1-10, évaluation de la clarté et la simplicité),
-    "applicationPratique": number (1-10, évaluation de l'application concrète et engagement émotionnel),
-    "authenticite": number (1-10, évaluation de la passion et impact spirituel),
-    "interactivite": number (1-10, évaluation de la gestion du temps et pertinence contextuelle)
-  },
-  "overallScore": number (1-10),
-  "strengths": string[] (3-5 points forts spécifiques),
-  "improvements": string[] (3-5 suggestions concrètes d'amélioration),
-  "summary": string (résumé concis des points principaux),
-  "topics": string[] (3-5 thèmes théologiques principaux),
-  "theologicalTradition": string (tradition théologique identifiée),
-  "keyScriptures": string[] (références bibliques clés utilisées),
-  "applicationPoints": string[] (2-3 points d'application pratique),
-  "illustrationsUsed": string[] (illustrations principales utilisées),
-  "audienceEngagement": {
-    "emotional": number (1-10, connexion émotionnelle),
-    "intellectual": number (1-10, compréhension théologique),
-    "practical": number (1-10, applicabilité quotidienne)
-  }
-}`;
-
-const SERMON_ANALYSIS_PROMPT_EN = `Mission: TheoCheck is designed to provide a comprehensive and constructive evaluation of Christian sermons. Be as objective as possible: the same sermon should always receive the same score.
-\n\nAnalyze the provided sermon and respond in JSON format with the following structure:
-\n{
-  "scores": {
-    "biblicalFidelity": number (1-10, evaluation of Scripture anchoring and interpretation),
-    "structure": number (1-10, evaluation of clarity and simplicity),
-    "practicalApplication": number (1-10, evaluation of concrete application and emotional engagement),
-    "authenticity": number (1-10, evaluation of passion and spiritual impact),
-    "interactivity": number (1-10, evaluation of time management and contextual relevance)
-  },
-  "overallScore": number (1-10),
-  "strengths": string[] (3-5 specific strengths),
-  "improvements": string[] (3-5 concrete improvement suggestions),
-  "summary": string (concise summary of main points),
-  "topics": string[] (3-5 main theological themes),
-  "theologicalTradition": string (identified theological tradition),
-  "keyScriptures": string[] (key biblical references used),
-  "applicationPoints": string[] (2-3 practical application points),
-  "illustrationsUsed": string[] (main illustrations used),
-  "audienceEngagement": {
-    "emotional": number (1-10, emotional connection),
-    "intellectual": number (1-10, theological understanding),
-    "practical": number (1-10, daily applicability)
-  }
-}`;
-
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("OPENAI_API_KEY is required");
-}
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Add custom properties to Express.Request
 declare global {
@@ -331,6 +247,7 @@ export async function registerRoutes(app: Express) {
     }
   });
 
+  // Contact form endpoint
   app.post("/api/contact", async (req, res) => {
     try {
       const { name, email, subject, message } = req.body;
@@ -342,29 +259,23 @@ export async function registerRoutes(app: Express) {
         });
       }
 
-      console.log("Contact form data:", { name, email, subject });
+      console.log("Attempting to save contact form:", { name, email, subject });
 
-      // Add timestamp to the contact submission
-      const contactData = {
+      const docRef = await db.collection('contacts').add({
         name,
         email,
         subject,
         message,
-        createdAt: admin.firestore.Timestamp.now(),
-        status: 'new' // For tracking purposes
-      };
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        status: 'new'
+      });
 
-      console.log("Attempting to save contact form data:", contactData);
-
-      // Add to 'contacts' collection
-      const docRef = await db.collection('contacts').add(contactData);
-
-      console.log("Contact form saved successfully with ID:", docRef.id);
+      console.log("Contact form saved successfully, ID:", docRef.id);
 
       res.json({
         success: true,
         message: "Message received successfully",
-        id: docRef.id // Return the document ID for reference
+        id: docRef.id
       });
     } catch (error) {
       console.error("Error saving contact form:", error);
@@ -649,3 +560,63 @@ function calculateRecommendationScore(sermon: Sermon, preferences: UserPreferenc
 
   return score;
 }
+
+const SERMON_ANALYSIS_PROMPT_FR = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
+
+Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
+{
+  "scores": {
+    "fideliteBiblique": number (1-10, évaluation de l'ancrage dans les Écritures et l'interprétation),
+    "structure": number (1-10, évaluation de la clarté et la simplicité),
+    "applicationPratique": number (1-10, évaluation de l'application concrète et engagement émotionnel),
+    "authenticite": number (1-10, évaluation de la passion et impact spirituel),
+    "interactivite": number (1-10, évaluation de la gestion du temps et pertinence contextuelle)
+  },
+  "overallScore": number (1-10),
+  "strengths": string[] (3-5 points forts spécifiques),
+  "improvements": string[] (3-5 suggestions concrètes d'amélioration),
+  "summary": string (résumé concis des points principaux),
+  "topics": string[] (3-5 thèmes théologiques principaux),
+  "theologicalTradition": string (tradition théologique identifiée),
+  "keyScriptures": string[] (références bibliques clés utilisées),
+  "applicationPoints": string[] (2-3 points d'application pratique),
+  "illustrationsUsed": string[] (illustrations principales utilisées),
+  "audienceEngagement": {
+    "emotional": number (1-10, connexion émotionnelle),
+    "intellectual": number (1-10, compréhension théologique),
+    "practical": number (1-10, applicabilité quotidienne)
+  }
+}`;
+
+const SERMON_ANALYSIS_PROMPT_EN = `Mission: TheoCheck is designed to provide a comprehensive and constructive evaluation of Christian sermons. Be as objective as possible: the same sermon should always receive the same score.
+
+Analyze the provided sermon and respond in JSON format with the following structure:
+{
+  "scores": {
+    "biblicalFidelity": number (1-10, evaluation of Scripture anchoring and interpretation),
+    "structure": number (1-10, evaluation of clarity and simplicity),
+    "practicalApplication": number (1-10, evaluation of concrete application and emotional engagement),
+    "authenticity": number (1-10, evaluation of passion and spiritual impact),
+    "interactivity": number (1-10, evaluation of time management and contextual relevance)
+  },
+  "overallScore": number (1-10),
+  "strengths": string[] (3-5 specific strengths),
+  "improvements": string[] (3-5 concrete improvement suggestions),
+  "summary": string (concise summary of main points),
+  "topics": string[] (3-5 main theological themes),
+  "theologicalTradition": string (identified theological tradition),
+  "keyScriptures": string[] (key biblical references used),
+  "applicationPoints": string[] (2-3 practical application points),
+  "illustrationsUsed": string[] (main illustrations used),
+  "audienceEngagement": {
+    "emotional": number (1-10, emotional connection),
+    "intellectual": number (1-10, theological understanding),
+    "practical": number (1-10, daily applicability)
+  }
+}`;
+
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error("OPENAI_API_KEY is required");
+}
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
