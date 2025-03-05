@@ -8,35 +8,44 @@ import PDFDocument from "pdfkit";
 import { getFirestore } from "firebase-admin/firestore";
 import path from "path";
 
-// Initialize Firebase Admin directly with env vars
-admin.initializeApp({
+// Initialize Firebase Admin with explicit credential structure
+const adminConfig = {
   credential: admin.credential.cert({
     projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-    clientEmail: `firebase-adminsdk-${process.env.VITE_FIREBASE_PROJECT_ID}@${process.env.VITE_FIREBASE_PROJECT_ID}.iam.gserviceaccount.com`,
+    clientEmail: process.env.VITE_FIREBASE_PROJECT_ID ? `firebase-adminsdk-${process.env.VITE_FIREBASE_PROJECT_ID}@${process.env.VITE_FIREBASE_PROJECT_ID}.iam.gserviceaccount.com` : '',
     privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
   }),
   projectId: process.env.VITE_FIREBASE_PROJECT_ID
+};
+
+console.log("Initializing Firebase Admin with config:", {
+  projectId: adminConfig.projectId,
+  hasPrivateKey: !!process.env.FIREBASE_PRIVATE_KEY,
+  clientEmail: adminConfig.credential.clientEmail
 });
 
-// Get Firestore instance once at startup
-const db = getFirestore();
-
-// Create contacts collection if it doesn't exist
-db.collection('contacts').get().then(snapshot => {
-  if (snapshot.empty) {
-    console.log('Creating contacts collection...');
-  } else {
-    console.log('Contacts collection exists with', snapshot.size, 'documents');
-  }
-}).catch(error => {
-  console.error('Error checking contacts collection:', error);
-});
-
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("OPENAI_API_KEY is required");
+try {
+  admin.initializeApp(adminConfig);
+  console.log("Firebase Admin initialized successfully");
+} catch (error) {
+  console.error("Error initializing Firebase Admin:", error);
+  throw error;
 }
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+// Get Firestore instance
+const db = getFirestore();
+
+// Initialize contacts collection
+async function initializeContactsCollection() {
+  try {
+    const snapshot = await db.collection('contacts').get();
+    console.log('Contacts collection status:', snapshot.empty ? 'Empty' : `${snapshot.size} documents`);
+  } catch (error) {
+    console.error('Error accessing contacts collection:', error);
+  }
+}
+
+initializeContactsCollection();
 
 // Example of a modified prompt with additional evaluation criteria
 const SERMON_ANALYSIS_PROMPT_FR = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
@@ -90,6 +99,12 @@ const SERMON_ANALYSIS_PROMPT_EN = `Mission: TheoCheck is designed to provide a c
     "practical": number (1-10, daily applicability)
   }
 }`;
+
+if (!process.env.OPENAI_API_KEY) {
+  throw new Error("OPENAI_API_KEY is required");
+}
+
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Add custom properties to Express.Request
 declare global {
