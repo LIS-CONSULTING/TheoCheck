@@ -4,3 +4,29 @@ dist
 server/public
 vite.config.ts.*
 *.tar.gz
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Firebase credentials
+**/firebase-adminsdk-*.json
+**/firebase-service-account.json
+**/firebase-credentials.json
+
+# API Keys and sensitive data
+**/api-keys.txt
+**/credentials.txt
+**/secrets.txt
+attached_assets/sermon-gpt-firebase-adminsdk-*.json
+attached_assets/Pasted-VITE-FIREBASE-PROJECT-ID-*.txt
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
