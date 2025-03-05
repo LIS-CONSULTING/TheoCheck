@@ -18,6 +18,20 @@ admin.initializeApp({
   projectId: process.env.VITE_FIREBASE_PROJECT_ID
 });
 
+// Get Firestore instance once at startup
+const db = getFirestore();
+
+// Create contacts collection if it doesn't exist
+db.collection('contacts').get().then(snapshot => {
+  if (snapshot.empty) {
+    console.log('Creating contacts collection...');
+  } else {
+    console.log('Contacts collection exists with', snapshot.size, 'documents');
+  }
+}).catch(error => {
+  console.error('Error checking contacts collection:', error);
+});
+
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is required");
 }
@@ -306,8 +320,14 @@ export async function registerRoutes(app: Express) {
     try {
       const { name, email, subject, message } = req.body;
 
-      // Get Firestore instance
-      const db = getFirestore();
+      if (!name || !email || !subject || !message) {
+        return res.status(400).json({
+          success: false,
+          message: "All fields are required"
+        });
+      }
+
+      console.log("Contact form data:", { name, email, subject });
 
       // Add timestamp to the contact submission
       const contactData = {
