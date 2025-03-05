@@ -6,6 +6,17 @@ import OpenAI from "openai";
 import admin from "firebase-admin";
 import PDFDocument from "pdfkit";
 import { getFirestore } from "firebase-admin/firestore";
+import path from "path";
+
+// Initialize Firebase Admin directly with env vars
+admin.initializeApp({
+  credential: admin.credential.cert({
+    projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+    clientEmail: `firebase-adminsdk-${process.env.VITE_FIREBASE_PROJECT_ID}@${process.env.VITE_FIREBASE_PROJECT_ID}.iam.gserviceaccount.com`,
+    privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+  }),
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID
+});
 
 if (!process.env.OPENAI_API_KEY) {
   throw new Error("OPENAI_API_KEY is required");
@@ -15,9 +26,8 @@ const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Example of a modified prompt with additional evaluation criteria
 const SERMON_ANALYSIS_PROMPT_FR = `Mission : TheoCheck est conçu pour offrir une évaluation complète et constructive des sermons chrétiens. Sois le plus objectif possible: il faut que le même sermon obtienne toujours la même note.
-
-Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
-{
+\n\nAnalyse le sermon fourni et réponds au format JSON avec la structure suivante:
+\n{
   "scores": {
     "fideliteBiblique": number (1-10, évaluation de l'ancrage dans les Écritures et l'interprétation),
     "structure": number (1-10, évaluation de la clarté et la simplicité),
@@ -42,9 +52,8 @@ Analyse le sermon fourni et réponds au format JSON avec la structure suivante:
 }`;
 
 const SERMON_ANALYSIS_PROMPT_EN = `Mission: TheoCheck is designed to provide a comprehensive and constructive evaluation of Christian sermons. Be as objective as possible: the same sermon should always receive the same score.
-
-Analyze the provided sermon and respond in JSON format with the following structure:
-{
+\n\nAnalyze the provided sermon and respond in JSON format with the following structure:
+\n{
   "scores": {
     "biblicalFidelity": number (1-10, evaluation of Scripture anchoring and interpretation),
     "structure": number (1-10, evaluation of clarity and simplicity),
@@ -215,61 +224,59 @@ export async function registerRoutes(app: Express) {
         return res.status(400).json({ message: "Invalid sermon data" });
       }
 
-      console.log("Creating sermon for user:", userId);
       const sermon = await storage.createSermon({
         ...parsed.data,
         userId,
         analysis: null,
+        topics: [],
+        theologicalTradition: null,
         bibleReference: parsed.data.bibleReference || null,
       });
 
       // Immediately analyze the sermon
       console.log("Starting sermon analysis for:", sermon.id);
 
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: SERMON_ANALYSIS_PROMPT_FR //Default to French
-          },
-          {
-            role: "user",
-            content: sermon.content
-          }
-        ],
-        response_format: { type: "json_object" },
-        max_tokens: 4000,
-        temperature: 0.7
-      });
+      try {
+        const response = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "system",
+              content: SERMON_ANALYSIS_PROMPT_FR
+            },
+            {
+              role: "user",
+              content: sermon.content
+            }
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 4000,
+          temperature: 0.7
+        });
 
-      console.log("OpenAI Response received");
-      const analysis = JSON.parse(response.choices[0].message.content) as SermonAnalysis;
-      const updatedSermon = await storage.updateSermonAnalysis(sermon.id, analysis);
+        if (!response.choices[0].message.content) {
+          throw new Error("No response content from OpenAI");
+        }
 
-      console.log("Analysis completed for sermon:", sermon.id);
-      res.json(updatedSermon);
+        const analysis = JSON.parse(response.choices[0].message.content) as SermonAnalysis;
+        const updatedSermon = await storage.updateSermonAnalysis(sermon.id, analysis);
+        res.json(updatedSermon);
+      } catch (error: any) {
+        console.error("OpenAI API Error:", error);
+        res.status(500).json({
+          message: "Erreur lors de l'analyse du sermon",
+          details: error.message
+        });
+      }
     } catch (error: any) {
       console.error("Error in /api/sermons:", error);
-      let message = "Failed to analyze sermon";
-      let status = 500;
-
-      if (error.status === 429) {
-        message = "429 You exceeded your current quota, please check your plan and billing details. For more information on this error, read the docs: https://platform.openai.com/docs/guides/error-codes/api-errors.";
-        status = 429;
-      } else if (error.status === 401) {
-        message = "API authentication error. Please contact support.";
-        status = 401;
-      }
-
-      res.status(status).json({
-        message,
-        details: error.message || "Unknown error"
+      res.status(500).json({
+        message: "Une erreur est survenue",
+        details: error.message
       });
     }
   });
 
-  // Add a new route for sermon recommendations
   app.get("/api/sermons/recommendations", authenticateUser, async (req, res) => {
     try {
       const user = await storage.getUserByFirebaseId(req.user!.id);
