@@ -3,24 +3,18 @@ import { createServer } from "http";
 import { storage } from "./storage";
 import { insertSermonSchema, type SermonAnalysis } from "@shared/schema";
 import OpenAI from "openai";
-import admin from "firebase-admin";
+import { auth as firebaseAuth, db } from "./lib/firebase-admin";
 import PDFDocument from "pdfkit";
-import { getFirestore } from "firebase-admin/firestore";
+import { getFirestore, FieldValue } from "firebase-admin/firestore";
 import path from "path";
 
-// Simple Firebase Admin initialization
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.VITE_FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-    })
-  });
+// Initialize OpenAI conditionally
+let openai: OpenAI | null = null;
+if (process.env.OPENAI_API_KEY) {
+  openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+} else {
+  console.warn("OPENAI_API_KEY not provided. Analysis features will be disabled.");
 }
-
-const db = getFirestore();
-
 
 // Add custom properties to Express.Request
 declare global {
@@ -33,21 +27,42 @@ declare global {
   }
 }
 
-// Firebase auth middleware
+// Firebase auth middleware with better error handling and logging
 const authenticateUser = async (req: Request, res: any, next: any) => {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith('Bearer ')) {
-      return res.status(401).json({ message: "Unauthorized" });
+      console.warn("Authentication failed: Missing or invalid authorization header");
+      return res.status(401).json({ 
+        message: "Authentication required",
+        details: "Missing or invalid authorization header"
+      });
     }
 
     const token = authHeader.split('Bearer ')[1];
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    req.user = { id: decodedToken.uid };
-    next();
-  } catch (error) {
-    console.error("Auth error:", error);
-    res.status(401).json({ message: "Unauthorized" });
+    try {
+      const decodedToken = await firebaseAuth.verifyIdToken(token);
+      req.user = { id: decodedToken.uid };
+      next();
+    } catch (verifyError: any) {
+      console.warn("Token verification failed:", verifyError.message);
+      if (verifyError.code === 'auth/id-token-expired') {
+        return res.status(401).json({ 
+          message: "Authentication expired",
+          details: "Please sign in again"
+        });
+      }
+      return res.status(401).json({ 
+        message: "Authentication failed",
+        details: "Invalid authentication token"
+      });
+    }
+  } catch (error: any) {
+    console.error("Authentication error:", error);
+    res.status(500).json({ 
+      message: "Authentication service error",
+      details: "Please try again later"
+    });
   }
 };
 
@@ -74,8 +89,15 @@ export async function registerRoutes(app: Express) {
 
   app.post("/api/analyze", authenticateUser, async (req, res) => {
     try {
+      if (!openai) {
+        return res.status(503).json({ 
+          message: "Analysis service unavailable. Please contact administrator.",
+          details: "OpenAI API key not configured"
+        });
+      }
+
       const sermonId = req.body.sermonId;
-      const language = req.body.language || 'fr'; // Get language from request
+      const language = req.body.language || 'fr';
       const sermon = await storage.getSermon(sermonId);
 
       if (!sermon) {
@@ -133,7 +155,7 @@ export async function registerRoutes(app: Express) {
       let status = 500;
 
       if (error.status === 429) {
-        message = "429 You exceeded your current quota, please check your plan and billing details.";
+        message = "Rate limit exceeded. Please try again later.";
         status = 429;
       } else if (error.status === 401) {
         message = "API authentication error. Please contact support.";
@@ -182,6 +204,12 @@ export async function registerRoutes(app: Express) {
       console.log("Starting sermon analysis for:", sermon.id);
 
       try {
+        if (!openai) {
+          return res.status(503).json({
+            message: "Analysis service unavailable. Please contact administrator.",
+            details: "OpenAI API key not configured"
+          });
+        }
         const response = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: [
@@ -247,7 +275,7 @@ export async function registerRoutes(app: Express) {
     }
   });
 
-  // Contact form endpoint
+  // Contact form endpoint with updated timestamp
   app.post("/api/contact", async (req, res) => {
     try {
       const { name, email, subject, message } = req.body;
@@ -266,7 +294,7 @@ export async function registerRoutes(app: Express) {
         email,
         subject,
         message,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: FieldValue.serverTimestamp(),
         status: 'new'
       });
 
@@ -614,9 +642,3 @@ Analyze the provided sermon and respond in JSON format with the following struct
     "practical": number (1-10, daily applicability)
   }
 }`;
-
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("OPENAI_API_KEY is required");
-}
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
