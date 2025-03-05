@@ -34,6 +34,9 @@ firebase-credentials.json
 attached_assets/
 *.pem
 *.key
+*firebase*.json
+*firebase*.js
+.firebase/
 
 # TypeScript
 *.tsbuildinfo
@@ -45,3 +48,12 @@ vite.config.ts.*
 
 # Testing
 coverage
+
+# Sensitive data
+*secret*
+*credential*
+*private*
+*.key
+*.pem
+*.p12
+*.pfx
