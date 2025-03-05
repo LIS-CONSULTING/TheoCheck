@@ -315,7 +315,7 @@ export async function registerRoutes(app: Express) {
         email,
         subject,
         message,
-        createdAt: new Date(),
+        createdAt: admin.firestore.Timestamp.now(),
         status: 'new' // For tracking purposes
       };
 
@@ -336,7 +336,7 @@ export async function registerRoutes(app: Express) {
       res.status(500).json({
         success: false,
         message: "Failed to save contact form",
-        error: error.message
+        error: error instanceof Error ? error.message : "Unknown error"
       });
     }
   });
