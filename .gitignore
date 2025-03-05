@@ -31,6 +31,9 @@ yarn-error.log*
 # Firebase
 firebase-credentials.json
 *-service-account.json
+attached_assets/
+*.pem
+*.key
 
 # TypeScript
 *.tsbuildinfo
