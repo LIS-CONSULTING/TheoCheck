@@ -17,6 +17,3 @@ export function useIsMobile() {
 
   return !!isMobile
 }
-
-// Add backward compatibility for components using useBreakpoint
-export const useBreakpoint = useIsMobile

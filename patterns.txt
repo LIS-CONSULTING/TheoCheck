@@ -1,2 +1,0 @@
-attached_assets/sermon-gpt-firebase-adminsdk-fbsvc-c97471f784.json
-attached_assets/Pasted-VITE-FIREBASE-PROJECT-ID-sermon-gpt-VITE-FIREBASE-API-KEY-AIzaSyCSwFDmqMKgTMnYX0rteqlQJnAJkqAPCdU--1740732606133.txt
