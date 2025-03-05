@@ -2,56 +2,7 @@ import 'dotenv/config';
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import admin from "firebase-admin";
-import path, { dirname } from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
-import { getFirestore } from "firebase-admin/firestore";
-
-// Initialize Firebase Admin
-try {
-  log("Initializing Firebase Admin...");
-  
-  const __filename = fileURLToPath(import.meta.url);
-  const __dirname = dirname(__filename);
-
-  // Load service account file
-  const serviceAccountPath = path.join(__dirname, "..", "attached_assets", "sermon-gpt-firebase-adminsdk-fbsvc-c97471f784.json");
-  
-  if (!fs.existsSync(serviceAccountPath)) {
-    throw new Error(`Service account file not found at ${serviceAccountPath}`);
-  }
-
-  const serviceAccount = JSON.parse(fs.readFileSync(serviceAccountPath).toString());
-  
-  // Make sure project ID is available
-  const projectId = process.env.FIREBASE_PROJECT_ID || serviceAccount.project_id;
-  
-  if (!projectId) {
-    throw new Error("Firebase project ID not found in environment or service account file");
-  }
-
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      ...serviceAccount,
-      projectId,
-    }),
-  });
-
-  // Initialize Firestore
-  const db = getFirestore();
-  // Create the contacts collection if it doesn't exist
-  db.collection('contacts').get().then(() => {
-    log("Firestore 'contacts' collection is accessible");
-  }).catch((error) => {
-    log(`Error accessing Firestore: ${error.message}`);
-  });
-
-  log("Firebase Admin and Firestore initialized successfully");
-} catch (error: any) {
-  log(`Firebase Admin initialization error: ${error.message}`);
-  process.exit(1);
-}
+import { app as firebaseApp, auth as firebaseAuth, db as firebaseDb } from './lib/firebase-admin';
 
 const app = express();
 app.use(express.json());
